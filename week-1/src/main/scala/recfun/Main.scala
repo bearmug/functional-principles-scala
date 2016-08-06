@@ -27,13 +27,15 @@ object Main {
 
     @tailrec
     def balanceLoop(stack: Int, chars: List[Char]): Boolean = {
-      if (stack < 0) return false
-      else if (chars.isEmpty) return stack == 0
+      if (stack < 0) false
+      else if (chars.isEmpty) stack == 0
+      else {
 
-      def head: Char = chars.head
-      if (head == '(') balanceLoop(stack + 1, chars.tail)
-      else if (head == ')') balanceLoop(stack - 1, chars.tail)
-      else balanceLoop(stack, chars.tail)
+        def head: Char = chars.head
+        if (head == '(') balanceLoop(stack + 1, chars.tail)
+        else if (head == ')') balanceLoop(stack - 1, chars.tail)
+        else balanceLoop(stack, chars.tail)
+      }
     }
 
     balanceLoop(0, chars)

@@ -16,3 +16,7 @@ gradle-app.setting
 # Intellij IDEA stuff
 *.iml
 .idea/
+
+# SBT stuff
+**/project
+**/target
