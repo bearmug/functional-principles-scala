@@ -21,7 +21,20 @@ object Main {
   /**
     * Exercise 2
     */
-  def balance(chars: List[Char]): Boolean = ???
+  def balance(chars: List[Char]): Boolean = {
+
+    def balanceLoop(stack: Int, chars: List[Char]): Boolean = {
+      if (stack < 0) return false
+      else if (chars.isEmpty) return stack == 0
+
+      def head: Char = chars.head
+      if (head == '(') balanceLoop(stack + 1, chars.tail)
+      else if (head == ')') balanceLoop(stack - 1, chars.tail)
+      else balanceLoop(stack, chars.tail)
+    }
+
+    balanceLoop(0, chars)
+  }
 
   /**
     * Exercise 3
