@@ -47,14 +47,12 @@ object Main {
   def countChange(money: Int, coins: List[Int]): Int = {
 
     def change(money: Int, coins: List[Int], minCoin: Int): Int = {
-      var res: Int = 0
-      for (coin <- coins) {
-        if (coin >= minCoin) {
-          if (coin == money) res += 1
-          else if (coin < money) res += change(money - coin, coins, coin)
-        }
-      }
-      res
+      coins.map(c =>
+        if (c < minCoin) 0
+        else if (c == money) 1
+        else if (c < money) change(money - c, coins, c)
+        else 0
+      ).sum
     }
 
     change(money, coins, 0)
