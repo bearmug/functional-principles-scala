@@ -20,7 +20,7 @@ object FunSets {
     * Returns the set of the one given element.
     */
   def singletonSet(elem: Int): Set =
-    (param: Int) => param == elem
+    (n: Int) => n == elem
 
 
 
@@ -28,24 +28,28 @@ object FunSets {
     * Returns the union of the two given sets,
     * the sets of all elements that are in either `s` or `t`.
     */
-  def union(s: Set, t: Set): Set = ???
+  def union(s: Set, t: Set): Set =
+    (n: Int) => s(n) || t(n)
 
   /**
     * Returns the intersection of the two given sets,
     * the set of all elements that are both in `s` and `t`.
     */
-  def intersect(s: Set, t: Set): Set = ???
+  def intersect(s: Set, t: Set): Set =
+    (n: Int) => s(n) && t(n)
 
   /**
     * Returns the difference of the two given sets,
     * the set of all elements of `s` that are not in `t`.
     */
-  def diff(s: Set, t: Set): Set = ???
+  def diff(s: Set, t: Set): Set =
+    (n: Int) => s(n) && !t(n)
 
   /**
     * Returns the subset of `s` for which `p` holds.
     */
-  def filter(s: Set, p: Int => Boolean): Set = ???
+  def filter(s: Set, p: Int => Boolean): Set =
+    (n: Int) => s(n) && p(n)
 
 
   /**
