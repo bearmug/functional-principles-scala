@@ -1,12 +1,11 @@
 package objsets
 
-import org.scalatest.FunSuite
-
-
+import org.scalatest.{FunSuite, Ignore}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
+@Ignore
 class TweetSetSuite extends FunSuite {
   trait TestSets {
     val set1 = new Empty
