@@ -65,7 +65,7 @@ abstract class TweetSet {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-    def mostRetweeted: Tweet = ???
+  def mostRetweeted: Tweet
 
   /**
    * Returns a list containing all tweets of this set, sorted by retweet count
@@ -121,13 +121,11 @@ class Empty extends TweetSet {
 
   def foreach(f: Tweet => Unit): Unit = ()
 
-  /**
-    * This method takes a predicate and returns a subset of all the elements
-    * in the original set for which the predicate is true.
-    */
   override def filter(p: (Tweet) => Boolean): TweetSet = this
 
   override def union(that: TweetSet): TweetSet = that
+
+  override def mostRetweeted: Tweet = throw new NoSuchElementException()
 }
 
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
@@ -166,14 +164,21 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     right.foreach(f)
   }
 
-  /**
-    * This method takes a predicate and returns a subset of all the elements
-    * in the original set for which the predicate is true.
-    */
   override def filter(p: (Tweet) => Boolean): TweetSet = filterAcc(p, new Empty)
 
   override def union(that: TweetSet): TweetSet =
     filterAcc(t => true, that)
+
+  def mostRetweeted: Tweet = {
+    def res =
+      if (left.isInstanceOf[Empty]) elem
+      else if (elem.retweets >= left.mostRetweeted.retweets) elem
+      else left.mostRetweeted
+
+    if (right.isInstanceOf[Empty]) res
+    else if (res.retweets >= right.mostRetweeted.retweets) res
+    else right.mostRetweeted
+  }
 }
 
 trait TweetList {
