@@ -44,19 +44,19 @@ class TweetSetSuite extends FunSuite {
     }
   }
 
-  ignore("union: set4c and set4d") {
+  test("union: set4c and set4d") {
     new TestSets {
       assert(size(set4c.union(set4d)) === 4)
     }
   }
 
-  ignore("union: with empty set (1)") {
+  test("union: with empty set (1)") {
     new TestSets {
       assert(size(set5.union(set1)) === 4)
     }
   }
 
-  ignore("union: with empty set (2)") {
+  test("union: with empty set (2)") {
     new TestSets {
       assert(size(set1.union(set5)) === 4)
     }
