@@ -76,7 +76,7 @@ abstract class TweetSet {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-    def descendingByRetweet: TweetList = ???
+  def descendingByRetweet: TweetList
 
   /**
    * The following methods are already implemented
@@ -126,6 +126,8 @@ class Empty extends TweetSet {
   override def union(that: TweetSet): TweetSet = that
 
   override def mostRetweeted: Tweet = throw new NoSuchElementException()
+
+  override def descendingByRetweet: TweetList = Nil
 }
 
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
@@ -178,6 +180,18 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     if (right.isInstanceOf[Empty]) res
     else if (res.retweets >= right.mostRetweeted.retweets) res
     else right.mostRetweeted
+  }
+
+  override def descendingByRetweet: TweetList = {
+    def descendingAcc(set: TweetSet, acc: TweetList): TweetList = {
+      if (set.isInstanceOf[Empty]) acc
+      else {
+        def retwitChampion = set.mostRetweeted
+        new Cons(retwitChampion, descendingAcc(set.remove(retwitChampion), acc))
+      }
+    }
+
+    descendingAcc(this, Nil)
   }
 }
 
