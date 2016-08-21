@@ -1,5 +1,7 @@
 package objsets
 
+import TweetReader._
+
 /**
  * A class to represent tweets.
  */
