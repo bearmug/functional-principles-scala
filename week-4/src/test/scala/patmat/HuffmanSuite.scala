@@ -32,8 +32,7 @@ class HuffmanSuite extends FunSuite {
     }
   }
 
-
-  ignore("string2chars(\"hello, world\")") {
+  test("string2chars(\"hello, world\")") {
     assert(string2Chars("hello, world") === List('h', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd'))
   }
 
@@ -43,7 +42,7 @@ class HuffmanSuite extends FunSuite {
   }
 
 
-  ignore("combine of some leaf list") {
+  test("combine of some leaf list") {
     val leaflist = List(Leaf('e', 1), Leaf('t', 2), Leaf('x', 4))
     assert(combine(leaflist) === List(Fork(Leaf('e',1),Leaf('t',2),List('e', 't'),3), Leaf('x',4)))
   }
