@@ -26,6 +26,12 @@ class HuffmanSuite extends FunSuite {
     }
   }
 
+  test("groupby for simple string") {
+    new TestTrees {
+      assert(times("ababda"toList) === List(('b',2), ('d',1), ('a',3)))
+    }
+  }
+
 
   ignore("string2chars(\"hello, world\")") {
     assert(string2Chars("hello, world") === List('h', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd'))
