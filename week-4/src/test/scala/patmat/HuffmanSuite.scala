@@ -38,7 +38,7 @@ class HuffmanSuite extends FunSuite {
   }
 
 
-  ignore("makeOrderedLeafList for some frequency table") {
+  test("makeOrderedLeafList for some frequency table") {
     assert(makeOrderedLeafList(List(('t', 2), ('e', 1), ('x', 3))) === List(Leaf('e',1), Leaf('t',2), Leaf('x',3)))
   }
 
