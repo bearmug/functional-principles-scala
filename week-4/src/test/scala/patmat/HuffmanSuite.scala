@@ -26,22 +26,46 @@ class HuffmanSuite extends FunSuite {
     }
   }
 
+  test("groupby for simple string") {
+    new TestTrees {
+      assert(times("ababda"toList) === List(('b',2), ('d',1), ('a',3)))
+    }
+  }
 
-  ignore("string2chars(\"hello, world\")") {
+  test("string2chars(\"hello, world\")") {
     assert(string2Chars("hello, world") === List('h', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd'))
   }
 
 
-  ignore("makeOrderedLeafList for some frequency table") {
+  test("makeOrderedLeafList for some frequency table") {
     assert(makeOrderedLeafList(List(('t', 2), ('e', 1), ('x', 3))) === List(Leaf('e',1), Leaf('t',2), Leaf('x',3)))
   }
 
 
-  ignore("combine of some leaf list") {
+  test("combine of some leaf list") {
     val leaflist = List(Leaf('e', 1), Leaf('t', 2), Leaf('x', 4))
     assert(combine(leaflist) === List(Fork(Leaf('e',1),Leaf('t',2),List('e', 't'),3), Leaf('x',4)))
   }
 
+  test("singleton Nil") {
+    assert(singleton(Nil) === false)
+  }
+
+  test("singleton composed") {
+    assert(singleton(List(Leaf('a', 3), Leaf('b', 2))) === false)
+  }
+
+  test("singleton node") {
+    assert(singleton(List(Leaf('a', 3))) === true)
+  }
+
+  test("singleton fork") {
+    assert(singleton(List(Fork(Leaf('a', 3), Leaf('b', 2), "aaabb".toList, 5))) === true)
+  }
+
+  test("simple code tree creation") {
+    assert(createCodeTree("tee".toList) === Fork(Leaf('t',1),Leaf('e',2),List('t', 'e'),3))
+  }
 
   ignore("decode and encode a very short text should be identity") {
     new TestTrees {
