@@ -1,7 +1,5 @@
 package patmat
 
-import common._
-
 /**
  * Assignment 4: Huffman coding
  *
@@ -156,8 +154,20 @@ object Huffman {
    * This function decodes the bit sequence `bits` using the code tree `tree` and returns
    * the resulting list of characters.
    */
-    def decode(tree: CodeTree, bits: List[Bit]): List[Char] = ???
-  
+  def decode(tree: CodeTree, bits: List[Bit]): List[Char] = {
+    def decodeNest(t: CodeTree, bt: List[Bit]) : List[Char] = bt match {
+      case Nil => t match {
+        case f: Fork => throw new IllegalArgumentException("Wrrong tree configuration");
+        case l: Leaf => List(l.char)
+      }
+      case b :: bs => t match {
+        case f: Fork => if  (b <= 0) decodeNest(f.left, bs) else decodeNest(f.right, bs)
+        case l: Leaf => List(l.char) ::: decodeNest(tree, b :: bs)
+      }
+    }
+    decodeNest(tree, bits)
+  }
+
   /**
    * A Huffman coding tree for the French language.
    * Generated from the data given at
@@ -167,14 +177,15 @@ object Huffman {
 
   /**
    * What does the secret message say? Can you decode it?
-   * For the decoding use the `frenchCode' Huffman tree defined above.
+   * For the decoding use the 'frenchCode' Huffman tree defined above.
    */
   val secret: List[Bit] = List(0,0,1,1,1,0,1,0,1,1,1,0,0,1,1,0,1,0,0,1,1,0,1,0,1,1,0,0,1,1,1,1,1,0,1,0,1,1,0,0,0,0,1,0,1,1,1,0,0,1,0,0,1,0,0,0,1,0,0,0,1,0,1)
 
   /**
    * Write a function that returns the decoded secret
    */
-    def decodedSecret: List[Char] = ???
+  def decodedSecret: List[Char] =
+    decode(frenchCode, secret)
   
 
   // Part 4a: Encoding using Huffman tree
@@ -183,7 +194,8 @@ object Huffman {
    * This function encodes `text` using the code tree `tree`
    * into a sequence of bits.
    */
-    def encode(tree: CodeTree)(text: List[Char]): List[Bit] = ???
+  def encode(tree: CodeTree)(text: List[Char]): List[Bit] = ???
+
   
   // Part 4b: Encoding using code table
 
