@@ -79,8 +79,27 @@ class HuffmanSuite extends FunSuite {
 
   test("decode and quick encode a very short text should be identity") {
     new TestTrees {
-      assert(decode(t1, quickEncode(t1)("ab".toList)) === "ab".toList)
+      assert(decode(t1, quickEncode(t1)("abba".toList)) === "abba".toList)
     }
   }
+
+//    [Test Description] 'createCodeTree(someText)' gives an optimal encoding, the number of bits when encoding 'someText' is minimal
+//    [Observed Error] 3757 did not equal 1919
+//    [Lost Points] 15
+//
+//  [Test Description] quick encode gives the correct byte sequence
+//    [Observed Error] List(0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0) did not equal List(1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1)
+//    [Lost Points] 20
+//
+//  [Test Description] convert: code table is created correctly
+//      List((a,List(0, 0)), (b,List(1, 0)), (d,List(1))) did not equal
+//      List((a,List(0, 0)), (b,List(0, 1)), (d,List(1)))
+//    [Lost Points] 20
+//
+//  [Test Description] decode and quick encode is identity
+//    [Observed Error]
+//    List(' ', 'u', 'u', ',', ' ', '0', 'r', 'e', 's', ' ', 's', 'c', 's', ',', 'a', ' ', 'i', 'b', 'e', ' ', 'c', 'n', 'a', 'i', 'i', 'y', ',', 'b', 't', 's', 'i', 'w', 'r', ' ', 'f', 'c', 'l', 'm', 'a', 'l', ' ', 'k', 'd', 'd', ' ', 's', 'r', 'l', 'r', 'a', 'n', 't', ' ', 't', '0', 'i', 'h', 'n', 'r', 's', 't', 'm', 'e', 'm') did not equal
+//    List('t', 'u', 'r', 'e', ' ', 'f', 'r', 'o', 'm', ' ', '4', '5', ' ', 'B', 'C', ',', ' ', 'm', 'a', 'k', 'i', 'n', 'g', ' ', 'i', 't', ' ', 'o', 'v', 'e', 'r', ' ', '2', '0', '0', '0', ' ', 'y', 'e', 'a', 'r', 's', ' ', 'o', 'l', 'd', '.', ' ', 'R', 'i', 'c', 'h', 'a', 'r', 'd', ' ', 'M', 'c')
+//    [Lost Points] 10
 
 }
