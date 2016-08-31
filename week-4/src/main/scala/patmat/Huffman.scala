@@ -111,7 +111,9 @@ object Huffman {
    * unchanged.
    */
     def combine(trees: List[CodeTree]): List[CodeTree] = trees match {
-      case x :: y :: xs => Fork(x, y, chars(x) ++ chars(y), weight(x) + weight(y)) :: xs
+      case x :: y :: xs =>
+        val list: List[CodeTree] = Fork(x, y, chars(x) ++ chars(y), weight(x) + weight(y)) :: xs
+        list.sortBy(t => weight(t))
       case x => x
     }
 
