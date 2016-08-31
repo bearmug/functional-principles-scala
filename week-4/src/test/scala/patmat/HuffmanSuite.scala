@@ -71,7 +71,7 @@ class HuffmanSuite extends FunSuite {
     assert(decodedSecret.mkString === "huffmanestcool")
   }
 
-  ignore("decode and encode a very short text should be identity") {
+  test("decode and encode a very short text should be identity") {
     new TestTrees {
       assert(decode(t1, encode(t1)("ab".toList)) === "ab".toList)
     }
