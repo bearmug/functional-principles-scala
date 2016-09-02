@@ -1,15 +1,16 @@
 package objsets
 
+import scala.util.parsing.json._
+
 object TweetReader {
 
   object ParseTweets {
-    import scala.util.parsing.json._
-    
+
     def getList[T](s: String): List[T] =
-      JSON.parseFull(s).get.asInstanceOf[List[T]]
+      JSON.parseFull(s).getOrElse(List()).asInstanceOf[List[T]]
 
     def getMap(s: String): Map[String, Any] =
-      JSON.parseFull(s).get.asInstanceOf[Map[String, Any]]
+      JSON.parseFull(s).getOrElse(List()).asInstanceOf[Map[String, Any]]
 
     def getTweets(user: String, json: String): List[Tweet] =
       for (map <- getList[Map[String, Any]](json)) yield {
@@ -47,10 +48,10 @@ object TweetReader {
   val sites = List("gizmodo", "TechCrunch", "engadget", "amazondeals", "CNET", "gadgetlab", "mashable")
   
   private val gizmodoTweets = TweetReader.ParseTweets.getTweetData("gizmodo", TweetData.gizmodo)
-  private val techCrunchTweets = TweetReader.ParseTweets.getTweetData("TechCrunch", TweetData.TechCrunch)
+  private val techCrunchTweets = TweetReader.ParseTweets.getTweetData("TechCrunch", TweetData.techCrunch)
   private val engadgetTweets = TweetReader.ParseTweets.getTweetData("engadget", TweetData.engadget)
   private val amazondealsTweets = TweetReader.ParseTweets.getTweetData("amazondeals", TweetData.amazondeals)
-  private val cnetTweets = TweetReader.ParseTweets.getTweetData("CNET", TweetData.CNET)
+  private val cnetTweets = TweetReader.ParseTweets.getTweetData("CNET", TweetData.cNet)
   private val gadgetlabTweets = TweetReader.ParseTweets.getTweetData("gadgetlab", TweetData.gadgetlab)
   private val mashableTweets = TweetReader.ParseTweets.getTweetData("mashable", TweetData.mashable)
   
