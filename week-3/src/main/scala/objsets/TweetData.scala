@@ -104,7 +104,7 @@ object TweetData {
 { "user": "gizmodo", "text": "The weirdest thing people hate about the iPhone 5: http://t.co/GMwuRp8D", "retweets": 202.0 },
 { "user": "gizmodo", "text": "Data centers waste a completely absurd amount of energy. http://t.co/NcO9pXqb", "retweets": 58.0 }
 ]"""
-  val TechCrunch = """[
+  val techCrunch = """[
 { "user": "TechCrunch", "text": "Resignation Media Hires CEO John Ellis To Run Tapiture, Its Fast-Growing Pinterest For Men  http://t.co/ctn7oWJc by @anthonyha", "retweets": 18.0 },
 { "user": "TechCrunch", "text": "FreedomPop Opens Its Freemium Internet Service To The Masses With New Public Beta http://t.co/35mA9Adp by @chrisvelazco", "retweets": 27.0 },
 { "user": "TechCrunch", "text": "Dish And The Dream Of Internet TV http://t.co/y8KcSl8G by @ryanlawler", "retweets": 25.0 },
@@ -410,7 +410,7 @@ object TweetData {
 { "user": "amazondeals", "text": "Lightning Deal! $101.15 - BISSELL Lift-Off Steam Mop http://t.co/kE5YhYZZ", "retweets": 2.0 },
 { "user": "amazondeals", "text": "Deal of the Day: Starting from $3.99 Each: Essential MP3 Albums for Your Collection http://t.co/wotNjjir", "retweets": 5.0 }
 ]"""
-  val CNET = """[
+  val cNet = """[
 { "user": "CNET", "text": "HP aims for business users with ElitePad 900 Windows 8 tablet http://t.co/XyOipAdL", "retweets": 10.0 },
 { "user": "CNET", "text": "RT @CNETNews: Apple rolls out fix for iPhone 5 Wi-Fi network data bug http://t.co/Gz13JfDD", "retweets": 93.0 },
 { "user": "CNET", "text": "Ever wonder how your iPhone screen got its color? (Video) http://t.co/Fq9FFbnc", "retweets": 29.0 },
