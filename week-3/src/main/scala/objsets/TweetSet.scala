@@ -144,21 +144,24 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
    * The following methods are already implemented
    */
 
-  def contains(x: Tweet): Boolean =
-    if (x.text < elem.text) left.contains(x)
-    else if (elem.text < x.text) right.contains(x)
-    else true
-
-  def incl(x: Tweet): TweetSet = {
-    if (x.text < elem.text) new NonEmpty(elem, left.incl(x), right)
-    else if (elem.text < x.text) new NonEmpty(elem, left, right.incl(x))
-    else this
+  def contains(x: Tweet): Boolean = (x, elem) match {
+    case (a, b) if a.text < b.text => left.contains(a)
+    case (a, b) if a.text > b.text => right.contains(a)
+    case (_, _) => true
   }
 
-  def remove(tw: Tweet): TweetSet =
-    if (tw.text < elem.text) new NonEmpty(elem, left.remove(tw), right)
-    else if (elem.text < tw.text) new NonEmpty(elem, left, right.remove(tw))
-    else left.union(right)
+  def incl(x: Tweet): TweetSet = (x, elem) match {
+    case (a, b) if a.text < b.text => new NonEmpty(b, left.incl(a), right)
+    case (a, b) if b.text < a.text => new NonEmpty(b, left, right.incl(a))
+    case (_, _) => this
+  }
+
+  def remove(tw: Tweet): TweetSet = (tw, elem) match {
+    case (a, b) if a.text < b.text => new NonEmpty(b, left.remove(a), right)
+    case (a, b) if b.text < a.text => new NonEmpty(b, left, right.remove(a))
+    case (_, _) => left.union(right)
+  }
+
 
   def foreach(f: Tweet => Unit): Unit = {
     f(elem)
