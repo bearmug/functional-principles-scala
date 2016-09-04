@@ -23,8 +23,12 @@ class AnagramsSuite extends FunSuite  {
   }
 
 
-  ignore("sentenceOccurrences: abcd e") {
+  test("sentenceOccurrences: abcd e") {
     assert(sentenceOccurrences(List("abcd", "e")) === List(('a', 1), ('b', 1), ('c', 1), ('d', 1), ('e', 1)))
+  }
+
+  test("sentenceOccurrences: Robert$ is not robot.") {
+    assert(sentenceOccurrences(List("Robert$", "is", "not", "robot.")) === List(('b',2), ('e',1), ('i',1), ('n',1), ('o',4), ('r',3), ('s',1), ('t',3)))
   }
 
 
