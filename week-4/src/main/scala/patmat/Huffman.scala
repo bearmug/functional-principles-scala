@@ -75,7 +75,7 @@ object Huffman {
    */
     def times(chars: List[Char]): List[(Char, Int)] =
       chars.groupBy(c => c)
-        .map(t => (t._1, t._2.size))
+        .map { case (ch, occur) => (ch, occur.size) }
         .toList
 
   /**
@@ -86,7 +86,8 @@ object Huffman {
    * of a leaf is the frequency of the character.
    */
     def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] =
-      freqs.sortBy(t => t._2).map(t => Leaf(t._1, t._2))
+      freqs.sortBy(t => t._2)
+        .map { case (ch, freq) => Leaf(ch, freq) }
 
   /**
    * Checks whether the list `trees` contains only one single code tree.
@@ -156,7 +157,8 @@ object Huffman {
    * This function decodes the bit sequence `bits` using the code tree `tree` and returns
    * the resulting list of characters.
    */
-  def decode(tree: CodeTree, bits: List[Bit]): List[Char] = {
+  def decode(tree: CodeTree, bits:
+  List[Bit]): List[Char] = {
     def decodeNest(t: CodeTree, bt: List[Bit]) : List[Char] = bt match {
       case Nil => t match {
         case f: Fork => throw new IllegalArgumentException("Wrrong tree configuration");
@@ -228,9 +230,10 @@ object Huffman {
    * This function returns the bit sequence that represents the character `char` in
    * the code table `table`.
    */
-  def codeBits(table: CodeTable)(char: Char): List[Bit] =
-    if (table.head._1 == char) table.head._2
-    else codeBits(table.tail)(char)
+  def codeBits(table: CodeTable)(char: Char): List[Bit] = table.head match {
+    case (c, bits) if c == char => bits
+    case (_, _) => codeBits(table.tail)(char)
+  }
 
   /**
    * Given a code tree, create a code table which contains, for every character in the
