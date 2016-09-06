@@ -39,9 +39,9 @@ object Anagrams {
       .filter(_.isLetter)
       .toList
       .groupBy(c => c)
-      .map(t => (t._1, t._2.size))
+      .map { case (l, total) => (l, total.size) }
       .toList
-      .sortBy(t => t._1)
+      .sortBy { case (c, freq) => c }
 
   /** Converts a sentence into its character occurrence list. */
   def sentenceOccurrences(s: Sentence): Occurrences =
