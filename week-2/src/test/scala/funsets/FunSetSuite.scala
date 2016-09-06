@@ -5,6 +5,7 @@ import org.scalatest.FunSuite
 
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
+import FunSets._
 
 /**
  * This class is a test suite for the methods in object FunSets. To run
@@ -47,8 +48,6 @@ class FunSetSuite extends FunSuite {
   //   assert(1 + 2 === 3)
   // }
 
-
-  import FunSets._
 
   test("contains is implemented") {
     assert(contains(x => true, 100))

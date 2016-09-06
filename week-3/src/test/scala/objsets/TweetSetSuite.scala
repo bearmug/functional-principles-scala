@@ -20,7 +20,7 @@ class TweetSetSuite extends FunSuite {
 
   def asSet(tweets: TweetSet): Set[Tweet] = {
     var res = Set[Tweet]()
-    tweets.foreach(res += _)
+    tweets.foreach(t => res += t)
     res
   }
 
