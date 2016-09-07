@@ -32,16 +32,16 @@ class AnagramsSuite extends FunSuite  {
   }
 
 
-  ignore("dictionaryByOccurrences.get: eat") {
+  test("dictionaryByOccurrences.get: eat") {
     assert(dictionaryByOccurrences.get(List(('a', 1), ('e', 1), ('t', 1))).map(_.toSet) === Some(Set("ate", "eat", "tea")))
   }
 
 
-  ignore("word anagrams: married") {
+  test("word anagrams: married") {
     assert(wordAnagrams("married").toSet === Set("married", "admirer"))
   }
 
-  ignore("word anagrams: player") {
+  test("word anagrams: player") {
     assert(wordAnagrams("player").toSet === Set("parley", "pearly", "player", "replay"))
   }
 
@@ -55,11 +55,11 @@ class AnagramsSuite extends FunSuite  {
   }
 
 
-  ignore("combinations: []") {
+  test("combinations: []") {
     assert(combinations(Nil) === List(Nil))
   }
 
-  ignore("combinations: abba") {
+  test("combinations: abba") {
     val abba = List(('a', 2), ('b', 2))
     val abbacomb = List(
       List(),
