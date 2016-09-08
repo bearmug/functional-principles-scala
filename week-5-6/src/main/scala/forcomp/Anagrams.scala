@@ -44,8 +44,11 @@ object Anagrams {
       .sortBy { case (c, freq) => c }
 
   /** Converts a sentence into its character occurrence list. */
-  def sentenceOccurrences(s: Sentence): Occurrences =
-    wordOccurrences(s.reduce((w1, w2) => w1 + w2))
+  def sentenceOccurrences(s: Sentence): Occurrences = s match {
+    case Nil => List()
+    case _ => wordOccurrences(s.reduce((w1, w2) => w1 + w2))
+  }
+
 
   /** The `dictionaryByOccurrences` is a `Map` from different occurrences to a sequence of all
    *  the words that have that occurrence count.
@@ -117,7 +120,15 @@ object Anagrams {
    *  Note: the resulting value is an occurrence - meaning it is sorted
    *  and has no zero-entries.
    */
-  def subtract(x: Occurrences, y: Occurrences): Occurrences = ???
+  def subtract(x: Occurrences, y: Occurrences): Occurrences =
+  (for (
+    ex <- x;
+    ey <- y
+  ) yield (ex, ey) match {
+    case ((cx, _), (cy, _)) if cx != cy => ex
+    case ((cx, ix), (_, iy)) => (cx, ix - iy)
+  }).filter(_._2 > 0)
+    .sortBy(_._1)
 
   /** Returns a list of all anagram sentences of the given sentence.
    *
@@ -159,5 +170,21 @@ object Anagrams {
    *
    *  Note: There is only one anagram of an empty sentence.
    */
-  def sentenceAnagrams(sentence: Sentence): List[Sentence] = ???
+  def sentenceAnagrams(sentence: Sentence): List[Sentence] = {
+    def sentences(o: Occurrences): List[Sentence] = o match {
+      case Nil => List(Nil)
+      case _ => {
+        for (
+          word <- dictionary;
+          sent <- sentences(subtract(o, wordOccurrences(word)))
+        ) yield (word, sent) match {
+          case (w, s :: sx) => w :: s :: sx
+          case (w, List()) => List(w)
+          case (_, Nil) => Nil
+        }
+      }
+    }
+
+    sentences(sentenceOccurrences(sentence))
+  }
 }
