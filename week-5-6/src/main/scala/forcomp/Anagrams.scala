@@ -1,5 +1,7 @@
 package forcomp
 
+import scala.runtime.Nothing$
+
 
 object Anagrams {
 
@@ -120,15 +122,15 @@ object Anagrams {
    *  Note: the resulting value is an occurrence - meaning it is sorted
    *  and has no zero-entries.
    */
-  def subtract(x: Occurrences, y: Occurrences): Occurrences =
-  (for (
-    ex <- x;
-    ey <- y
-  ) yield (ex, ey) match {
-    case ((cx, _), (cy, _)) if cx != cy => ex
-    case ((cx, ix), (_, iy)) => (cx, ix - iy)
-  }).filter(_._2 > 0)
-    .sortBy(_._1)
+  def subtract(x: Occurrences, y: Occurrences): Occurrences = {
+    val ymap = y.map(yt =>  yt._1 -> yt._2).toMap withDefaultValue(-1)
+    x.map(xt => ymap(xt._1) match {
+      case -1 => xt
+      case yi => (xt._1, xt._2 - yi)
+    })
+      .filter(t => t._2 > 0)
+      .sortBy(_._1)
+  }
 
   /** Returns a list of all anagram sentences of the given sentence.
    *
