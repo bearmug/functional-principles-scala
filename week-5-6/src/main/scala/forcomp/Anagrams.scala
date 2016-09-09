@@ -44,8 +44,11 @@ object Anagrams {
       .sortBy { case (c, freq) => c }
 
   /** Converts a sentence into its character occurrence list. */
-  def sentenceOccurrences(s: Sentence): Occurrences =
-    wordOccurrences(s.reduce((w1, w2) => w1 + w2))
+  def sentenceOccurrences(s: Sentence): Occurrences = s match {
+    case Nil => List()
+    case _ => wordOccurrences(s.reduce((w1, w2) => w1 + w2))
+  }
+
 
   /** The `dictionaryByOccurrences` is a `Map` from different occurrences to a sequence of all
    *  the words that have that occurrence count.
@@ -117,7 +120,23 @@ object Anagrams {
    *  Note: the resulting value is an occurrence - meaning it is sorted
    *  and has no zero-entries.
    */
-  def subtract(x: Occurrences, y: Occurrences): Occurrences = ???
+  def subtract(x: Occurrences, y: Occurrences): Occurrences = {
+    val ymap = y.map(yt =>  yt._1 -> yt._2).toMap withDefaultValue(-1)
+    x.map(xt => ymap(xt._1) match {
+      case -1 => xt
+      case yi => (xt._1, xt._2 - yi)
+    })
+      .filter(t => t._2 > 0)
+      .sortBy(_._1)
+  }
+
+  def contains(x: Occurrences, y: Occurrences): Boolean = {
+    val xmap = x.map(xt => xt._1 -> xt._2).toMap withDefaultValue Int.MinValue
+    y.find(yt => xmap(yt._1) < yt._2 || xmap(yt._1) == Int.MinValue) match {
+      case None => true
+      case Some(_) => false
+    }
+  }
 
   /** Returns a list of all anagram sentences of the given sentence.
    *
@@ -158,6 +177,36 @@ object Anagrams {
    *  so it has to be returned in this list.
    *
    *  Note: There is only one anagram of an empty sentence.
+    *  List("Rex", "Lin", "Zulu"), List("Rex", "Zulu", "nil"), List("Lin", "Zulu", "Rex")) did not equal
+    *  List("Rex", "Lin", "Zulu"), List("Rex", "Zulu", "nil"), List("Lin", "Zulu", "Rex"), List("Linux", "rulez"))
+ScalaTestFailureLocation
+    *
+    *
    */
-  def sentenceAnagrams(sentence: Sentence): List[Sentence] = ???
+  def sentenceAnagrams(sentence: Sentence): List[Sentence] = {
+    def sentences(o: Occurrences): List[Sentence] = o match {
+      case Nil => List(Nil)
+      case _ =>
+        for (
+          word <- dictionary;
+          occurrences = wordOccurrences(word)
+          if contains(o, occurrences);
+          subtracted = subtract(o, occurrences);
+          sent <- sentences(subtracted)
+        ) yield (subtracted, word, sent) match {
+          case (Nil, _, _) => List(word)
+          case (_, _, List()) => List(word)
+          case (_, _, s :: sx) => word :: s :: sx
+        }
+    }
+
+    val res = sentences(sentenceOccurrences(sentence))
+      .filterNot((s: Sentence) =>
+        sentence.length == 1 && s.equals(sentence))
+
+    res match {
+      case List() => List(Nil)
+      case _ => res
+    }
+  }
 }
