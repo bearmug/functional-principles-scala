@@ -86,7 +86,8 @@ object Huffman {
    * of a leaf is the frequency of the character.
    */
     def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] =
-      freqs.sortBy(t => t._2)
+      freqs
+        .sortBy { case(_, i) => i }
         .map { case (ch, freq) => Leaf(ch, freq) }
 
   /**
@@ -146,7 +147,10 @@ object Huffman {
    * frequencies from that text and creates a code tree based on them.
    */
   def createCodeTree(chars: List[Char]): CodeTree =
-    until(singleton, combine)(makeOrderedLeafList(times(chars))).head
+    until(singleton, combine)(makeOrderedLeafList(times(chars))) match {
+      case x :: xs => x
+      case Nil => throw new Error("empty char list supplied")
+    }
 
 
   // Part 3: Decoding
@@ -230,9 +234,12 @@ object Huffman {
    * This function returns the bit sequence that represents the character `char` in
    * the code table `table`.
    */
-  def codeBits(table: CodeTable)(char: Char): List[Bit] = table.head match {
-    case (c, bits) if c == char => bits
-    case (_, _) => codeBits(table.tail)(char)
+  def codeBits(table: CodeTable)(char: Char): List[Bit] = table match {
+    case head :: ts => head match {
+      case (c, bits) if c == char => bits
+      case (_, _) => codeBits(table.tail)(char)
+    }
+    case Nil => List()
   }
 
   /**
