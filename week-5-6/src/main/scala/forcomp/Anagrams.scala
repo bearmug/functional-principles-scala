@@ -1,7 +1,5 @@
 package forcomp
 
-import scala.runtime.Nothing$
-
 
 object Anagrams {
 
@@ -132,6 +130,14 @@ object Anagrams {
       .sortBy(_._1)
   }
 
+  def contains(x: Occurrences, y: Occurrences): Boolean = {
+    val xmap = x.map(xt => xt._1 -> xt._2).toMap withDefaultValue Int.MinValue
+    y.find(yt => xmap(yt._1) < yt._2 || xmap(yt._1) == Int.MinValue) match {
+      case None => true
+      case Some(_) => false
+    }
+  }
+
   /** Returns a list of all anagram sentences of the given sentence.
    *
    *  An anagram of a sentence is formed by taking the occurrences of all the characters of
@@ -171,22 +177,36 @@ object Anagrams {
    *  so it has to be returned in this list.
    *
    *  Note: There is only one anagram of an empty sentence.
+    *  List("Rex", "Lin", "Zulu"), List("Rex", "Zulu", "nil"), List("Lin", "Zulu", "Rex")) did not equal
+    *  List("Rex", "Lin", "Zulu"), List("Rex", "Zulu", "nil"), List("Lin", "Zulu", "Rex"), List("Linux", "rulez"))
+ScalaTestFailureLocation
+    *
+    *
    */
   def sentenceAnagrams(sentence: Sentence): List[Sentence] = {
     def sentences(o: Occurrences): List[Sentence] = o match {
       case Nil => List(Nil)
-      case _ => {
+      case _ =>
         for (
           word <- dictionary;
-          sent <- sentences(subtract(o, wordOccurrences(word)))
-        ) yield (word, sent) match {
-          case (w, s :: sx) => w :: s :: sx
-          case (w, List()) => List(w)
-          case (_, Nil) => Nil
+          occurrences = wordOccurrences(word)
+          if contains(o, occurrences);
+          subtracted = subtract(o, occurrences);
+          sent <- sentences(subtracted)
+        ) yield (subtracted, word, sent) match {
+          case (Nil, _, _) => List(word)
+          case (_, _, List()) => List(word)
+          case (_, _, s :: sx) => word :: s :: sx
         }
-      }
     }
 
-    sentences(sentenceOccurrences(sentence))
+    val res = sentences(sentenceOccurrences(sentence))
+      .filterNot((s: Sentence) =>
+        sentence.length == 1 && s.equals(sentence))
+
+    res match {
+      case List() => List(Nil)
+      case _ => res
+    }
   }
 }

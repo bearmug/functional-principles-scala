@@ -60,13 +60,35 @@ class AnagramsSuite extends FunSuite  {
     assert(subtract(ok, ok) === empty)
   }
 
+  test("contains: ok - ok") {
+    val ok = List(('o', 1), ('k', 1))
+    assert(contains(ok, ok))
+  }
+
+  test("contains: okie - ok") {
+    val okie = List(('o', 1), ('k', 1), ('i', 1), ('e', 1))
+    val ok = List(('o', 1), ('k', 1))
+    assert(contains(okie, ok))
+  }
+
+  test("contains: okie - oko") {
+    val okie = List(('o', 1), ('k', 1), ('i', 1), ('e', 1))
+    val oko = List(('o', 2), ('k', 1))
+    assert(contains(okie, oko) === false)
+  }
+
+  test("contains: okie - ya") {
+    val okie = List(('o', 1), ('k', 1), ('i', 1), ('e', 1))
+    val ya = List(('a', 1), ('y', 1))
+    assert(contains(okie, ya) === false)
+  }
+
   test("subtract: okie - ok") {
     val okie = List(('o', 1), ('k', 1), ('i', 1), ('e', 1))
     val ok = List(('o', 1), ('k', 1))
-    val ie = List(('i', 1), ('e', 1))
+    val ie = List(('e', 1), ('i', 1))
     assert(subtract(okie, ok) === ie)
   }
-
 
   test("combinations: []") {
     assert(combinations(Nil) === List(Nil))
@@ -94,12 +116,17 @@ class AnagramsSuite extends FunSuite  {
     assert(sentenceAnagrams(sentence) === List(Nil))
   }
 
-  ignore("sentence anagrams: Rex") {
+  test("sentence anagrams: Rex") {
     val sentence = List("Rex")
     assert(sentenceAnagrams(sentence) === List(Nil))
   }
 
-  ignore("sentence anagrams: Linux rulez") {
+  test("sentence anagrams: Lin") {
+    val sentence = List("Lin")
+    assert(sentenceAnagrams(sentence) === List(List("nil")))
+  }
+
+  test("sentence anagrams: Linux rulez") {
     val sentence = List("Linux", "rulez")
     val anas = List(
       List("Rex", "Lin", "Zulu"),
