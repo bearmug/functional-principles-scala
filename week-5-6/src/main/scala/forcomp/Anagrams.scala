@@ -43,10 +43,20 @@ object Anagrams {
       .toList
       .sortBy { case (c, freq) => c }
 
+  val wordOccurrencesMap = dictionary
+    .map(w => w -> wordOccurrences(w))
+    .toMap
+    .withDefaultValue(Nil)
+
   /** Converts a sentence into its character occurrence list. */
   def sentenceOccurrences(s: Sentence): Occurrences = s match {
     case Nil => List()
-    case _ => wordOccurrences(s.reduce((w1, w2) => w1 + w2))
+    case _ =>
+      val r: Word = s.reduce((w1, w2) => w1 + w2)
+      wordOccurrencesMap(r) match {
+        case Nil => wordOccurrences(r)
+        case o => o
+    }
   }
 
 
@@ -189,7 +199,7 @@ ScalaTestFailureLocation
       case _ =>
         for (
           word <- dictionary;
-          occurrences = wordOccurrences(word)
+          occurrences = wordOccurrencesMap(word)
           if contains(o, occurrences);
           subtracted = subtract(o, occurrences);
           sent <- sentences(subtracted)
