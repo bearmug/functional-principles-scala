@@ -78,8 +78,8 @@ object Anagrams {
   lazy val dictionaryByOccurrences: Map[Occurrences, List[Word]] =
     dictionary
       .map(w => (wordOccurrences(w), w))
-      .groupBy(t => t._1) map {
-        case (k, v) => (k, v.map(t => t._2))
+      .groupBy { case (c,_) => c } map {
+        case (k, v) => (k, v.map { case (_, i) => i } )
       } withDefaultValue List()
 
   /** Returns all the anagrams of a given word. */
@@ -131,18 +131,18 @@ object Anagrams {
    *  and has no zero-entries.
    */
   def subtract(x: Occurrences, y: Occurrences): Occurrences = {
-    val ymap = y.map(yt =>  yt._1 -> yt._2).toMap withDefaultValue(-1)
+    val ymap = y.map { case (yc, yi) =>  yc -> yi }.toMap withDefaultValue(-1)
     x.map(xt => ymap(xt._1) match {
       case -1 => xt
       case yi => (xt._1, xt._2 - yi)
     })
-      .filter(t => t._2 > 0)
-      .sortBy(_._1)
+      .filter { case (tc, ti) => ti > 0 }
+      .sortBy { case (tc, ti) => tc }
   }
 
   def contains(x: Occurrences, y: Occurrences): Boolean = {
     val xmap = x.map(xt => xt._1 -> xt._2).toMap withDefaultValue Int.MinValue
-    y.find(yt => xmap(yt._1) < yt._2 || xmap(yt._1) == Int.MinValue) match {
+    y.find { case (yc, yi) => xmap(yc) < yi || xmap(yc) == Int.MinValue } match {
       case None => true
       case Some(_) => false
     }

@@ -86,7 +86,8 @@ object Huffman {
    * of a leaf is the frequency of the character.
    */
     def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] =
-      freqs.sortBy(t => t._2)
+      freqs
+        .sortBy { case(_, i) => i }
         .map { case (ch, freq) => Leaf(ch, freq) }
 
   /**
