@@ -78,7 +78,7 @@ object Anagrams {
   lazy val dictionaryByOccurrences: Map[Occurrences, List[Word]] =
     dictionary
       .map(w => (wordOccurrences(w), w))
-      .groupBy { case (c,_) => c } map {
+      .groupBy { case (c, _) => c } map {
         case (k, v) => (k, v.map { case (_, i) => i } )
       } withDefaultValue List()
 
@@ -141,7 +141,7 @@ object Anagrams {
   }
 
   def contains(x: Occurrences, y: Occurrences): Boolean = {
-    val xmap = x.map(xt => xt._1 -> xt._2).toMap withDefaultValue Int.MinValue
+    val xmap = x.map { case (xc, xi) => xc -> xi }.toMap withDefaultValue Int.MinValue
     y.find { case (yc, yi) => xmap(yc) < yi || xmap(yc) == Int.MinValue } match {
       case None => true
       case Some(_) => false
