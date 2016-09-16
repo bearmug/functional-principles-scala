@@ -1,7 +1,5 @@
 package streams
 
-import common._
-
 /**
  * This component implements a parser to define terrains from a
  * graphical ASCII representation.
