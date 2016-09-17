@@ -26,7 +26,8 @@ trait Solver extends GameDef {
    * It should only return valid neighbors, i.e. block positions
    * that are inside the terrain.
    */
-  def neighborsWithHistory(b: Block, history: List[Move]): Stream[(Block, List[Move])] = ???
+  def neighborsWithHistory(b: Block, history: List[Move]): Stream[(Block, List[Move])] =
+    b.legalNeighbors map((t: (Block, Move)) => (t._1, t._2 :: history)) toStream
 
   /**
    * This function returns the list of neighbors without the block
@@ -34,7 +35,8 @@ trait Solver extends GameDef {
    * make sure that we don't explore circular paths.
    */
   def newNeighborsOnly(neighbors: Stream[(Block, List[Move])],
-                       explored: Set[Block]): Stream[(Block, List[Move])] = ???
+                       explored: Set[Block]): Stream[(Block, List[Move])] =
+  neighbors filterNot(t => explored.contains(t._1))
 
   /**
    * The function `from` returns the stream of all possible paths
@@ -57,7 +59,7 @@ trait Solver extends GameDef {
    *
    * Note: the solution should not look at or compare the lengths
    * of different paths - the implementation should naturally
-   * construct the correctly sorted stream.
+   * construct the co rrectly sorted stream.
    */
   def from(initial: Stream[(Block, List[Move])],
            explored: Set[Block]): Stream[(Block, List[Move])] = ???
