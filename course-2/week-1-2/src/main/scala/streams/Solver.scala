@@ -1,7 +1,5 @@
 package streams
 
-import scala.runtime.Nothing$
-
 /**
  * This component implements the solver for the Bloxorz game
  */
@@ -29,7 +27,9 @@ trait Solver extends GameDef {
    * that are inside the terrain.
    */
   def neighborsWithHistory(b: Block, history: List[Move]): Stream[(Block, List[Move])] =
-    b.legalNeighbors map(t => (t._1, t._2 :: history)) toStream
+  b.legalNeighbors.map {
+    case (b, m) => (b, m :: history)
+  }.toStream
 
   /**
    * This function returns the list of neighbors without the block
