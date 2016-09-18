@@ -109,25 +109,32 @@ trait GameDef {
 
 
     /** The block obtained by moving left */
-    def left = if (isStanding)         dy(-2, -1)
-               else if (b1.x == b2.x)  dy(-1, -2)
-               else                    dy(-1, -1)
+    def left = (isStanding, isHorizontal) match {
+      case (true, _) => dy(-2, -1)
+      case (_, true) => dy(-1, -2)
+      case _ => dy(-1, -1)
+    }
 
     /** The block obtained by moving right */
-    def right = if (isStanding)        dy(1, 2)
-                else if (b1.x == b2.x) dy(2, 1)
-                else                   dy(1, 1)
+    def right = (isStanding, isHorizontal) match {
+      case (true, _) => dy(1, 2)
+      case (_, true) => dy(2, 1)
+      case _ => dy(1, 1)
+    }
 
     /** The block obtained by moving up */
-    def up = if (isStanding)           dx(-2, -1)
-             else if (b1.x == b2.x)    dx(-1, -1)
-             else                      dx(-1, -2)
+    def up = (isStanding, isHorizontal) match {
+      case (true, _) => dx(-2, -1)
+      case (_, true) => dx(-1, -1)
+      case _ => dx(-1, -2)
+    }
 
     /** The block obtained by moving down */
-    def down = if (isStanding)         dx(1, 2)
-               else if (b1.x == b2.x)  dx(1, 1)
-               else                    dx(2, 1)
-
+    def down = (isStanding, isHorizontal) match {
+      case (true, _) => dx(1, 2)
+      case (_, true) => dx(1, 1)
+      case _ => dx(2, 1)
+    }
 
     /**
      * Returns the list of blocks that can be obtained by moving
@@ -150,6 +157,11 @@ trait GameDef {
      * Returns `true` if the block is standing.
      */
     def isStanding: Boolean = b1 == b2
+
+    /**
+      * Returns 'true' if the block is not vertical.
+      */
+    def isHorizontal: Boolean = b1.x == b2.x
 
     /**
      * Returns `true` if the block is entirely inside the terrain.
