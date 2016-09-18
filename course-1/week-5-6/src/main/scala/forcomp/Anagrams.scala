@@ -132,10 +132,10 @@ object Anagrams {
    */
   def subtract(x: Occurrences, y: Occurrences): Occurrences = {
     val ymap = y.map { case (yc, yi) =>  yc -> yi }.toMap withDefaultValue(-1)
-    x.map(xt => ymap(xt._1) match {
-      case -1 => xt
-      case yi => (xt._1, xt._2 - yi)
-    })
+    x.map { case (xc, xi) => ymap(xc) match {
+      case -1 => (xc, xi)
+      case n => (xc, xi - n)
+    }}
       .filter { case (tc, ti) => ti > 0 }
       .sortBy { case (tc, ti) => tc }
   }

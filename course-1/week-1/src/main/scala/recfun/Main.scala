@@ -24,20 +24,18 @@ object Main {
     * Exercise 2
     */
   def balance(chars: List[Char]): Boolean = {
-
     @tailrec
-    def balanceLoop(stack: Int, chars: List[Char]): Boolean = {
-      if (stack < 0) false
-      else if (chars.isEmpty) stack == 0
-      else {
-
-        def head: Char = chars.head
-        if (head == '(') balanceLoop(stack + 1, chars.tail)
-        else if (head == ')') balanceLoop(stack - 1, chars.tail)
-        else balanceLoop(stack, chars.tail)
+    def balanceLoop(stack: Int, chars: List[Char]): Boolean = (stack, chars) match {
+      case (s, _) if s < 0 => false
+      case (_, c) if chars.isEmpty => stack == 0
+      case _ => {
+        chars match {
+          case '(' :: _ => balanceLoop(stack + 1, chars.tail)
+          case ')' :: _ => balanceLoop(stack - 1, chars.tail)
+          case _ => balanceLoop(stack, chars.tail)
+        }
       }
     }
-
     balanceLoop(0, chars)
   }
 
@@ -47,12 +45,12 @@ object Main {
   def countChange(money: Int, coins: List[Int]): Int = {
 
     def change(money: Int, coins: List[Int], minCoin: Int): Int = {
-      coins.map(c =>
-        if (c < minCoin) 0
-        else if (c == money) 1
-        else if (c < money) change(money - c, coins, c)
-        else 0
-      ).sum
+      coins.map {
+        case c if c < minCoin => 0
+        case c if c == money => 1
+        case c if c < money => change(money - c, coins, c)
+        case _ => 0
+      }.sum
     }
 
     change(money, coins, 0)

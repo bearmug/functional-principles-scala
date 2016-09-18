@@ -206,6 +206,7 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
 
 trait TweetList {
   def head: Tweet
+  def headOption: Option[Tweet]
   def tail: TweetList
   def isEmpty: Boolean
   def foreach(f: Tweet => Unit): Unit =
@@ -219,10 +220,14 @@ object Nil extends TweetList {
   def head = throw new java.util.NoSuchElementException("head of EmptyList")
   def tail = throw new java.util.NoSuchElementException("tail of EmptyList")
   def isEmpty = true
+
+  def headOption: Option[Tweet] = None
 }
 
 class Cons(val head: Tweet, val tail: TweetList) extends TweetList {
   def isEmpty = false
+
+  def headOption: Option[Tweet] = Some(head)
 }
 
 

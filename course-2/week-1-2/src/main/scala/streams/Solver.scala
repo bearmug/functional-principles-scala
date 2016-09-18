@@ -1,7 +1,5 @@
 package streams
 
-import scala.runtime.Nothing$
-
 /**
  * This component implements the solver for the Bloxorz game
  */
@@ -29,7 +27,9 @@ trait Solver extends GameDef {
    * that are inside the terrain.
    */
   def neighborsWithHistory(b: Block, history: List[Move]): Stream[(Block, List[Move])] =
-    b.legalNeighbors map(t => (t._1, t._2 :: history)) toStream
+  b.legalNeighbors.map {
+    case (b, m) => (b, m :: history)
+  }.toStream
 
   /**
    * This function returns the list of neighbors without the block
@@ -38,7 +38,7 @@ trait Solver extends GameDef {
    */
   def newNeighborsOnly(neighbors: Stream[(Block, List[Move])],
                        explored: Set[Block]): Stream[(Block, List[Move])] =
-    neighbors filterNot(t => explored.contains(t._1))
+    neighbors filterNot { case (b, m) => explored.contains(b) }
 
   /**
    * The function `from` returns the stream of all possible paths
@@ -67,10 +67,10 @@ trait Solver extends GameDef {
            explored: Set[Block]): Stream[(Block, List[Move])] = initial match {
     case Stream.Empty => Stream.empty
     case _ => {
-          val layer: Stream[(Block, List[Move])] = initial
-            .flatMap(t => newNeighborsOnly(neighborsWithHistory(t._1, t._2), explored))
-          val nextExplored = layer.map(_._1).toSet
-          initial #::: layer #::: from(layer, nextExplored ++ explored)
+      val layer: Stream[(Block, List[Move])] = initial
+        .flatMap { case (b, m) => newNeighborsOnly(neighborsWithHistory(b, m), explored) }
+      val nextExplored = layer.map { case (b, m) => b }.toSet
+      initial #::: layer #::: from(layer, nextExplored ++ explored)
     }
   }
 
@@ -101,11 +101,10 @@ trait Solver extends GameDef {
    * position.
    */
   lazy val solution: List[Move] = {
-    val sOption = pathsToGoal.
-      map(t => t._2).
-      sortBy(m => m.length).
-      headOption
-    sOption match {
+    pathsToGoal
+      .map { case (b, m) => m }
+      .sortBy(m => m.length)
+      .headOption match {
       case None => List()
       case Some(s) => s
     }

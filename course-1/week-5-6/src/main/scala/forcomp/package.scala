@@ -1,3 +1,5 @@
+import scala.util.control.NonFatal
+
 package object forcomp {
   val dictionaryPath = List("forcomp", "linuxwords.txt")
 
@@ -13,7 +15,7 @@ package object forcomp {
       val s = io.Source.fromInputStream(wordstream)
       s.getLines.toList
     } catch {
-      case e: Exception =>
+      case NonFatal(e) =>
         println("Could not load word list: " + e)
         throw e
     } finally {
