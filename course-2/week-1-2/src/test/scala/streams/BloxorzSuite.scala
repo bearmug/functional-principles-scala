@@ -1,7 +1,7 @@
 package streams
 
-import org.scalatest.{FunSuite, Ignore}
 import org.junit.runner.RunWith
+import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
@@ -59,15 +59,41 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
+  test("neighbours history filter") {
+    new Level1 {
+      assert(
+        neighborsWithHistory(Block(Pos(1,1),Pos(1,1)), List(Left,Up)).toSet ==
+          Set(
+            (Block(Pos(1,2),Pos(1,3)), List(Right,Left,Up)),
+            (Block(Pos(2,1),Pos(3,1)), List(Down,Left,Up))
+          ))
+    }
+  }
 
-	ignore("optimal solution for level 1") {
+  ignore("new neighbours only") {
+    new Level1 {
+      assert(
+        newNeighborsOnly(
+          Set(
+            (Block(Pos(1, 2), Pos(1, 3)), List(Right, Left, Up)),
+            (Block(Pos(2, 1), Pos(3, 1)), List(Down, Left, Up))
+          ).toStream,
+
+          Set(Block(Pos(1, 2), Pos(1, 3)), Block(Pos(1, 1), Pos(1, 1)))
+        ) == Set(
+          (Block(Pos(2, 1), Pos(3, 1)), List(Down, Left, Up))
+        ).toStream)
+    }
+  }
+
+	test("optimal solution for level 1") {
     new Level1 {
       assert(solve(solution) == Block(goal, goal))
     }
   }
 
 
-	ignore("optimal solution length for level 1") {
+	test("optimal solution length for level 1") {
     new Level1 {
       assert(solution.length == optsolution.length)
     }
