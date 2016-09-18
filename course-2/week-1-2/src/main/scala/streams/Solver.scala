@@ -1,5 +1,7 @@
 package streams
 
+import scala.runtime.Nothing$
+
 /**
  * This component implements the solver for the Bloxorz game
  */
@@ -98,7 +100,14 @@ trait Solver extends GameDef {
    * the first move that the player should perform from the starting
    * position.
    */
-  lazy val solution: List[Move] = pathsToGoal.
-    map(t => t._2).
-    sortBy(m => m.length).head
+  lazy val solution: List[Move] = {
+    val sOption = pathsToGoal.
+      map(t => t._2).
+      sortBy(m => m.length).
+      headOption
+    sOption match {
+      case None => List()
+      case Some(s) => s
+    }
+  }
 }
