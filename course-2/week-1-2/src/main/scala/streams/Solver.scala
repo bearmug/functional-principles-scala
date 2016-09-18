@@ -101,11 +101,10 @@ trait Solver extends GameDef {
    * position.
    */
   lazy val solution: List[Move] = {
-    val sOption = pathsToGoal.
-      map(t => t._2).
-      sortBy(m => m.length).
-      headOption
-    sOption match {
+    pathsToGoal
+      .map { case (b, m) => m }
+      .sortBy(m => m.length)
+      .headOption match {
       case None => List()
       case Some(s) => s
     }

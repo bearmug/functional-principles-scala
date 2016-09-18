@@ -30,14 +30,13 @@ object Main {
       if (stack < 0) false
       else if (chars.isEmpty) stack == 0
       else {
-
-        def head: Char = chars.head
-        if (head == '(') balanceLoop(stack + 1, chars.tail)
-        else if (head == ')') balanceLoop(stack - 1, chars.tail)
-        else balanceLoop(stack, chars.tail)
+        chars match {
+          case '(' :: _ => balanceLoop(stack + 1, chars.tail)
+          case ')' :: _ => balanceLoop(stack - 1, chars.tail)
+          case _ => balanceLoop(stack, chars.tail)
+        }
       }
     }
-
     balanceLoop(0, chars)
   }
 
