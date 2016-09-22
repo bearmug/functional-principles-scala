@@ -10,6 +10,7 @@ subprojects {
         compile 'org.scala-lang:scala-parser-combinators:2.11.0-M4'
         compile 'commons-codec:commons-codec:1.10'
         compile 'org.apache.commons:commons-lang3:3.4'
+        compile 'org.scalacheck:scalacheck_2.11:1.12.1'
 
         testCompile 'junit:junit:4.12'
         testCompile 'org.scalatest:scalatest_2.11:2.2.6'
