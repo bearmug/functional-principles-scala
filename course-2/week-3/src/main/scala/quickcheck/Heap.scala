@@ -38,8 +38,8 @@ trait BinomialHeap extends Heap {
     if (ord.lteq(t1.x,t2.x)) Node(t1.x, t1.r+1, t2::t1.c) else Node(t2.x, t2.r+1, t1::t2.c)
   protected def ins(t: Node, ts: H): H = ts match {
     case Nil => List(t)
-    case tp::ts => // t.r<=tp.r
-      if (t.r<tp.r) t::tp::ts else ins(link(t, tp), ts)
+    case tp::tss => // t.r<=tp.r
+      if (t.r<tp.r) t::tp::ts else ins(link(t, tp), tss)
   }
 
   override def empty = Nil
