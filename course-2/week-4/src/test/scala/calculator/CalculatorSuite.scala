@@ -9,7 +9,6 @@ import org.scalatest._
 
 import TweetLength.MaxTweetLength
 
-@Ignore
 @RunWith(classOf[JUnitRunner])
 class CalculatorSuite extends FunSuite with ShouldMatchers {
 
