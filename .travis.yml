@@ -13,4 +13,4 @@ env:
     - GRADLE_OPTS="-Xms256m"
 
 install: echo "skip 'gradle assemble' step"
-script: gradle build --continue
+script: gradle build --continue --stacktrace
