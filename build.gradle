@@ -3,6 +3,7 @@ subprojects {
 
     repositories {
         jcenter()
+        mavenCentral()
     }
 
     dependencies {
@@ -12,8 +13,15 @@ subprojects {
         compile 'org.apache.commons:commons-lang3:3.4'
         compile 'org.scalacheck:scalacheck_2.11:1.12.1'
 
+        // course-3 dependencies
+        compile 'com.storm-enroute:scalameter-core_2.11:0.6'
+        compile 'com.github.scala-blitz:scala-blitz_2.11:1.1'
+        compile 'org.scala-lang.modules:scala-swing_2.11:1.0.1'
+        compile 'org.apache.spark:spark-core_2.11:1.2.1'
+
         testCompile 'junit:junit:4.12'
         testCompile 'org.scalatest:scalatest_2.11:2.2.6'
+        testCompile 'com.storm-enroute:scalameter_2.11:0.6'
         testRuntime 'org.scala-lang.modules:scala-xml_2.11:1.0.5'
     }
 }
