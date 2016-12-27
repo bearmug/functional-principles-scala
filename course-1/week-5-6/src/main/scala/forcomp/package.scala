@@ -1,3 +1,4 @@
+import scala.io.Source
 import scala.util.control.NonFatal
 
 package object forcomp {
@@ -12,7 +13,7 @@ package object forcomp {
       sys.error("Could not load word list, dictionary file not found")
     }
     try {
-      val s = io.Source.fromInputStream(wordstream)
+      val s = Source.fromInputStream(wordstream)
       s.getLines.toList
     } catch {
       case NonFatal(e) =>
