@@ -1,5 +1,6 @@
 include \
         'course-1/week-1', 'course-1/week-2', 'course-1/week-3', 'course-1/week-4', 'course-1/week-5-6',
-        'course-2/week-1-2', 'course-2/week-3', 'course-2/week-4'
+        'course-2/week-1-2', 'course-2/week-3', 'course-2/week-4',
+        'course-3/week-1'
 
 rootProject.name = 'functional-programming-scala'
