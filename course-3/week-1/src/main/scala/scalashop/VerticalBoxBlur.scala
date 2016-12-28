@@ -60,7 +60,7 @@ object VerticalBoxBlur {
     // TODO implement using the `task` construct and the `blur` method
     (0 until src.width)
       .groupBy { _ / numTasks }
-      .map { m => (m._2.head, m._2.last) }
+      .map { m => (m._2.head, m._2.last + 1) }
       .map { f =>
         task {
           blur(src, dst, f._1, f._2, radius)
