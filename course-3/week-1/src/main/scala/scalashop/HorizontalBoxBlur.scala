@@ -57,8 +57,13 @@ object HorizontalBoxBlur {
    */
   def parBlur(src: Img, dst: Img, numTasks: Int, radius: Int): Unit = {
   // TODO implement using the `task` construct and the `blur` method
-
-  ???
+    (0 until src.height)
+    .groupBy { _ / numTasks }
+      .map { m => (m._2.head, m._2.last) }
+      .map { f =>
+        task {
+          blur(src, dst, f._1, f._2, radius)
+        }
+      }.foreach { _.join()}
   }
-
 }
