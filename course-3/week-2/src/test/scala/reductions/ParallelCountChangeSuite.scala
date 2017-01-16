@@ -9,7 +9,6 @@ import org.scalatest.junit.JUnitRunner
 import common._
 import ParallelCountChange._
 
-@Ignore
 @RunWith(classOf[JUnitRunner])
 class ParallelCountChangeSuite extends FunSuite {
 
