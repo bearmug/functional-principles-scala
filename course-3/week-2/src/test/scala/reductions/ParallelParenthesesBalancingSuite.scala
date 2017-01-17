@@ -9,7 +9,6 @@ import org.scalatest.junit.JUnitRunner
 import common._
 import ParallelParenthesesBalancing._
 
-@Ignore
 @RunWith(classOf[JUnitRunner])
 class ParallelParenthesesBalancingSuite extends FunSuite {
 

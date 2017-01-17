@@ -40,9 +40,11 @@ object ParallelParenthesesBalancing {
 
   /** Returns `true` iff the parentheses in the input `chars` are balanced.
    */
-  def balance(chars: Array[Char]): Boolean = {
-    ???
-  }
+  def balance(chars: Array[Char]): Boolean = chars.map {
+    case '(' => 1
+    case ')' => -1
+    case _ => 0
+  }.fold(0)((a1, a2) => if (a1 < 0) Int.MinValue else a1 + a2) == 0
 
   /** Returns `true` iff the parentheses in the input `chars` are balanced.
    */
