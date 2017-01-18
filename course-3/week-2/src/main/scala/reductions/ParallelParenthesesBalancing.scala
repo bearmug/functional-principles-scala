@@ -50,15 +50,26 @@ object ParallelParenthesesBalancing {
    */
   def parBalance(chars: Array[Char], threshold: Int): Boolean = {
 
-    def traverse(idx: Int, until: Int, arg1: Int, arg2: Int) /*: ???*/ = {
-      ???
+    type Least = Int //- min value for subsequence
+    type Total = Int //- total parentheses level for subsequence
+
+    def traverse(idx: Int, until: Int, least: Least, total: Total): (Least, Total) = {
+      if (idx >= until) (least, total) else chars(idx) match {
+        case '(' => traverse(idx + 1, until, least, total + 1)
+        case ')' => traverse(idx + 1, until, math.min(least, total - 1), total -1)
+        case _ => traverse(idx + 1, until, least, total)
+      }
     }
 
-    def reduce(from: Int, until: Int) /*: ???*/ = {
-      ???
+    def reduce(from: Int, until: Int) : (Least, Total) = {
+      if (until - from <= threshold) traverse(from, until, 0, 0) else {
+        val mid = (until + from) / 2
+        val ((l1, t1), (l2, t2)) = parallel(reduce(from, mid), reduce(mid, until))
+        (math.min(l1, t1 + l2), t1 + t2) //- scanning left to right
+      }
     }
 
-    reduce(0, chars.length) == ???
+    reduce(0, chars.length) == (0, 0)
   }
 
   // For those who want more:
