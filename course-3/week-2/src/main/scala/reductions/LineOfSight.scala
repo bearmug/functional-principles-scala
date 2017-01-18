@@ -35,7 +35,7 @@ object LineOfSight {
 
   def lineOfSight(input: Array[Float], output: Array[Float]): Unit = {
     for (i <- 1 until input.length)
-      output(i) = math.max(output(i - 1), input(i) / i)
+      output(i) = max(output(i - 1), input(i) / i)
   }
 
   sealed abstract class Tree {
@@ -51,7 +51,8 @@ object LineOfSight {
   /** Traverses the specified part of the array and returns the maximum angle.
    */
   def upsweepSequential(input: Array[Float], from: Int, until: Int): Float = {
-    ???
+    if (from + 1 >= until) input(from) / from else
+      max(input(from) / from, upsweepSequential(input, from + 1, until))
   }
 
   /** Traverses the part of the array starting at `from` and until `end`, and
