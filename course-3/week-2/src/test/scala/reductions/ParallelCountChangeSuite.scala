@@ -96,6 +96,14 @@ class ParallelCountChangeSuite extends FunSuite {
     check(Int.MaxValue - 1, List(Int.MaxValue), 0)
   }
 
+  test("parCountChange for 16 with 1 coin and 16 threshold") {
+    def check(money: Int, coins: List[Int], expected: Int) =
+      assert(parCountChange(money, coins, moneyThreshold(money)) == expected,
+        s"countChange($money, $coins) should be $expected")
+
+    check(16, List(1), 1)
+  }
+
   test("countChange should work for multi-coins") {
     def check(money: Int, coins: List[Int], expected: Int) =
       assert(countChange(money, coins) == expected,
