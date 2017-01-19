@@ -93,9 +93,9 @@ object LineOfSight {
     tree: Tree): Unit = {
     tree match {
       case l: Leaf => downsweepSequential(input, output, startingAngle, l.from, l.until)
-      case Node(l, r) => parallel(
-        downsweep(input, output, startingAngle, l),
-        downsweep(input, output, l.maxPrevious, r))
+      case n: Node => parallel(
+        downsweep(input, output, startingAngle, n.left),
+        downsweep(input, output, math.max(startingAngle, n.left.maxPrevious), n.right))
     }
   }
 
