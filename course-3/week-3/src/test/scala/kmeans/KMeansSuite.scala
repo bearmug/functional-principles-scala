@@ -13,7 +13,6 @@ import scala.math._
 object KM extends KMeans
 import KM._
 
-@Ignore
 @RunWith(classOf[JUnitRunner])
 class KMeansSuite extends FunSuite {
 
