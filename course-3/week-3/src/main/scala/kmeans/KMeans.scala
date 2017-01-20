@@ -63,7 +63,11 @@ class KMeans {
   }
 
   def converged(eta: Double)(oldMeans: GenSeq[Point], newMeans: GenSeq[Point]): Boolean = {
-    ???
+    (oldMeans, newMeans) match {
+      case (Nil, Nil) => true
+      case (oH :: _, nH :: _) if oH.squareDistance(nH) > eta => false
+      case (_ :: oT, _ :: nT) => converged(eta)(oT, nT)
+    }
   }
 
   @tailrec
