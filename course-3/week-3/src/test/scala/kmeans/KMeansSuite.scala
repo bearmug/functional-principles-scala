@@ -73,6 +73,28 @@ class KMeansSuite extends FunSuite {
     checkParClassify(points, means, expected)
   }
 
+  test("'converged' should work for same means") {
+    assert(converged(0.1)(
+      List(new Point(1.0, 1.0, 1.0), new Point(2.0, 2.0, 2.0)),
+      List(new Point(1.0, 1.0, 1.0), new Point(2.0, 2.0, 2.0))))
+  }
+
+  test("'converged' should work for close means") {
+    assert(converged(0.1)(
+      List(new Point(1.0, 1.0, 1.0), new Point(2.0, 2.0, 2.0)),
+      List(new Point(1.0, 1.05, 1.0), new Point(2.0, 2.0, 2.01))))
+  }
+
+  test("'converged' does not work for diff means") {
+    assert(!converged(0.1)(
+      List(new Point(1.0, 1.0, 1.0), new Point(2.0, 2.0, 2.0)),
+      List(new Point(1.0, 1.05, 1.0), new Point(3.101, 2.0, 2.0))))
+  }
+
+  test("'converged' should work for same means long sequence") {
+    val seq = (1 to 99).map(_.toFloat).map(f => new Point(f, f, f)).toArray
+    assert(converged(0.00001)(seq, seq))
+  }
 }
 
 

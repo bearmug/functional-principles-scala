@@ -64,15 +64,17 @@ class KMeans {
 
   def converged(eta: Double)(oldMeans: GenSeq[Point], newMeans: GenSeq[Point]): Boolean = {
     (oldMeans, newMeans) match {
-      case (Nil, Nil) => true
-      case (oH :: _, nH :: _) if oH.squareDistance(nH) > eta => false
-      case (_ :: oT, _ :: nT) => converged(eta)(oT, nT)
+      case (Seq(), Seq()) => true
+      case (Seq(o,os@_*), Seq(n, ns@_*)) => o.squareDistance(n) <= eta && converged(eta)(os, ns)
     }
   }
 
   @tailrec
   final def kMeans(points: GenSeq[Point], means: GenSeq[Point], eta: Double): GenSeq[Point] = {
-    if (???) kMeans(???, ???, ???) else ??? // your implementation need to be tail recursive
+    val newMeans = update(classify(points, means), means)
+    if (!converged(eta)(means, newMeans))
+      kMeans(points, newMeans, eta)
+    else means // your implementation need to be tail recursive
   }
 }
 
