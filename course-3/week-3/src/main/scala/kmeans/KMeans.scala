@@ -74,7 +74,7 @@ class KMeans {
     val newMeans = update(classify(points, means), means)
     if (!converged(eta)(means, newMeans))
       kMeans(points, newMeans, eta)
-    else means // your implementation need to be tail recursive
+    else newMeans // your implementation need to be tail recursive
   }
 }
 
