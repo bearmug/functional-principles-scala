@@ -1,7 +1,7 @@
 package kmeans
 
 import scala.annotation.tailrec
-import scala.collection._
+import scala.collection.{GenSeq, _}
 import scala.util.Random
 import org.scalameter._
 import common._
@@ -64,8 +64,8 @@ class KMeans {
 
   def converged(eta: Double)(oldMeans: GenSeq[Point], newMeans: GenSeq[Point]): Boolean = {
     (oldMeans, newMeans) match {
-      case (Seq(), Seq()) => true
-      case (Seq(o,os@_*), Seq(n, ns@_*)) => o.squareDistance(n) <= eta && converged(eta)(os, ns)
+      case (GenSeq(o, Nil), GenSeq(n, Nil)) => o.squareDistance(n) <= eta
+      case (GenSeq(o,os), GenSeq(n, ns)) => o.squareDistance(n) <= eta && converged(eta)(os, ns)
     }
   }
 
@@ -75,6 +75,10 @@ class KMeans {
     if (!converged(eta)(means, newMeans))
       kMeans(points, newMeans, eta)
     else newMeans // your implementation need to be tail recursive
+  }
+
+  object GenSeq {
+    def unapply(gs: GenSeq[Point]) = Some((gs.head, gs.tail))
   }
 }
 

@@ -1,9 +1,7 @@
 package kmeans
 
-import java.util.concurrent._
-
 import scala.collection._
-import org.scalatest.{FunSuite, Ignore}
+import org.scalatest.FunSuite
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import common._
@@ -11,7 +9,7 @@ import common._
 import scala.math._
 
 object KM extends KMeans
-import KM._
+import KM.{GenSeq => _, _}
 
 @RunWith(classOf[JUnitRunner])
 class KMeansSuite extends FunSuite {
