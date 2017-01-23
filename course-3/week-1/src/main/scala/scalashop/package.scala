@@ -25,9 +25,7 @@ package object scalashop {
 
   /** Restricts the integer into the specified range. */
   def clamp(v: Int, min: Int, max: Int): Int = {
-    if (v < min) min
-    else if (v > max) max
-    else v
+    math.min(math.max(min, v), max)
   }
 
   /** Image is a two-dimensional matrix of pixel values. */
@@ -39,8 +37,15 @@ package object scalashop {
 
   /** Computes the blurred RGBA value of a single pixel of the input image. */
   def boxBlurKernel(src: Img, x: Int, y: Int, radius: Int): RGBA = {
-    // TODO implement using while loops
-    ???
+    (for (currentX <- clamp(x - radius, 0, x) to clamp(x + radius, x, src.width - 1);
+          currentY <- clamp(y - radius, 0, y) to clamp(y + radius, y, src.height - 1))
+      yield src(currentX, currentY)).
+      map(c => (red(c), green(c), blue(c), alpha(c))).
+      foldLeft((0, 0, 0, 0, 0))((acc, rgba) => (acc, rgba) match {
+        case ((aR, aG, aB, aA, counter), (r, g, b, a)) => (aR + r, aG + g, aB + b, aA + a, counter + 1)
+      }) match {
+      case (red, green, blue, alpha, total) =>
+        rgba(red / total, green / total, blue / total, alpha / total)
+    }
   }
-
 }

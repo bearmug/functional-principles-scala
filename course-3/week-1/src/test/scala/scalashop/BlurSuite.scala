@@ -4,7 +4,6 @@ import org.scalatest.{FunSuite, Ignore}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
-@Ignore
 @RunWith(classOf[JUnitRunner])
 class BlurSuite extends FunSuite {
   test("boxBlurKernel should correctly handle radius 0") {
