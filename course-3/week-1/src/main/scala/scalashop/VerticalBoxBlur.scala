@@ -58,11 +58,15 @@ object VerticalBoxBlur {
   def parBlur(src: Img, dst: Img, numTasks: Int, radius: Int): Unit = {
     // TODO implement using the `task` construct and the `blur` method
     (0 until src.width)
-      .groupBy { _ % numTasks }
-      .map { m => task {
+      .groupBy {
+        _ / (src.width / numTasks)
+      }
+      .map { m =>
+        task {
           blur(src, dst, m._2.head, m._2.last + 1, radius)
         }
-      }.foreach { _.join()}
+      }.foreach {
+      _.join()
+    }
   }
-
 }
