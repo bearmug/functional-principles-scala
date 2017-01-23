@@ -25,9 +25,7 @@ package object scalashop {
 
   /** Restricts the integer into the specified range. */
   def clamp(v: Int, min: Int, max: Int): Int = {
-    if (v < min) min
-    else if (v > max) max
-    else v
+    math.min(math.max(min, v), max)
   }
 
   /** Image is a two-dimensional matrix of pixel values. */
@@ -39,26 +37,15 @@ package object scalashop {
 
   /** Computes the blurred RGBA value of a single pixel of the input image. */
   def boxBlurKernel(src: Img, x: Int, y: Int, radius: Int): RGBA = {
-    // TODO implement using while loops
-    var pixels = 0
-    var red = 0
-    var green = 0
-    var blue = 0
-    var alpha = 0
-
-    for (currentX <- clamp(x - radius, 0, x) to clamp(x + radius, x, src.width - 1);
-         currentY <- clamp(y - radius, 0, y) to clamp(y + radius, y, src.height - 1)) {
-
-      val rgba = src(currentX, currentY)
-      red += this.red(rgba)
-      green += this.green(rgba)
-      blue += this.blue(rgba)
-      alpha += this.alpha(rgba)
-
-      pixels += 1
+    (for (currentX <- clamp(x - radius, 0, x) to clamp(x + radius, x, src.width - 1);
+          currentY <- clamp(y - radius, 0, y) to clamp(y + radius, y, src.height - 1))
+      yield src(currentX, currentY)).
+      map(c => (red(c), green(c), blue(c), alpha(c))).
+      foldLeft((0, 0, 0, 0, 0))((acc, rgba) => (acc, rgba) match {
+        case ((aR, aG, aB, aA, counter), (r, g, b, a)) => (aR + r, aG + g, aB + b, aA + a, counter + 1)
+      }) match {
+      case (red, green, blue, alpha, total) =>
+        rgba(red / total, green / total, blue / total, alpha / total)
     }
-
-    rgba(red / pixels, green / pixels, blue / pixels, alpha / pixels)
   }
-
 }
