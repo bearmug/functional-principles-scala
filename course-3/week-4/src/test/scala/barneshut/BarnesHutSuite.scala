@@ -12,7 +12,6 @@ import scala.math._
 import scala.collection.parallel._
 import barneshut.conctrees.ConcBuffer
 
-@Ignore
 @RunWith(classOf[JUnitRunner])
 class BarnesHutSuite extends FunSuite {
 
