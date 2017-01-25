@@ -162,7 +162,7 @@ package object barneshut {
         case Fork(nw, ne, sw, se) => quad.size / distance(quad.massX, quad.massY, this.x, this.y) match {
           // see if node is far enough from the body,
           // or recursion is needed
-          case tooFar if tooFar >= theta => addForce(quad.mass, quad.massX, quad.massY)
+          case farEnough if farEnough >= theta => addForce(quad.mass, quad.massX, quad.massY)
           case _ => Seq (nw, ne, sw, se).foreach(traverse)
         }
       }
