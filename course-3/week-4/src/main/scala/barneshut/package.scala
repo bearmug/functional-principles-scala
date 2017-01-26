@@ -69,8 +69,14 @@ package object barneshut {
     val centerY: Float = (nw.centerY + se.centerY) / 2
     val size: Float = nw.size * 2
     val mass: Float = count(_.mass)
-    val massX: Float = count(q => q.massX * q.mass) / mass
-    val massY: Float = count(q => q.massY * q.mass) / mass
+    val massX: Float = mass match {
+      case 0.0 => centerX
+      case _ => count(q => q.massX * q.mass) / mass
+    }
+    val massY: Float = mass match {
+      case 0.0 => centerY
+      case _ => count(q => q.massY * q.mass) / mass
+    }
     val total: Int = count(_.total)
 
     def insert(b: Body): Fork = {
@@ -162,8 +168,8 @@ package object barneshut {
         case Fork(nw, ne, sw, se) => quad.size / distance(quad.massX, quad.massY, this.x, this.y) match {
           // see if node is far enough from the body,
           // or recursion is needed
-          case farEnough if farEnough >= theta => addForce(quad.mass, quad.massX, quad.massY)
-          case _ => Seq (nw, ne, sw, se).foreach(traverse)
+          case farEnough if farEnough < theta => addForce(quad.mass, quad.massX, quad.massY)
+          case _ => Seq(nw, ne, sw, se).foreach(traverse)
         }
       }
 
