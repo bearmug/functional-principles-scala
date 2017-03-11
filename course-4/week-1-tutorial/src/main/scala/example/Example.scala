@@ -15,3 +15,7 @@ object Example {
 
   def sumOfPlusOnes = sc.parallelize(List(1, 2, 3, 4, 5)).map(_+1).reduce(_+_)
 }
+
+object Lists {
+  def max(l: List[Int]): Int = l.max
+}
