@@ -45,7 +45,7 @@ class WikipediaSuite extends FunSuite with BeforeAndAfterAll {
     import WikipediaRanking._
     val rdd = sc.parallelize(Seq(
       WikipediaArticle("title", "Java Jakarta"),
-      WikipediaArticle("title", "[[[Java]]] Jakarta"),
+      WikipediaArticle("title", "[[[ Java ]]] Jakarta"),
       WikipediaArticle("title", "Jakarta Java")
     ))
     val res = (occurrencesOfLang("Java", rdd) == 3)
