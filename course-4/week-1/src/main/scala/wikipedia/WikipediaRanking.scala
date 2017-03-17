@@ -30,7 +30,10 @@ object WikipediaRanking {
    *  Hint4: no need to search in the title :)
    */
   def occurrencesOfLang(lang: String, rdd: RDD[WikipediaArticle]): Int = rdd
-    .aggregate(0)((i, w) => if (w.text contains lang) i + 1 else i, (c1, c2) => c1 + c2)
+    .aggregate(0)((i, w) => if (
+        w.text == lang ||
+        w.text.matches(".*" + lang + "[\\W].*") ||
+        w.text.endsWith(lang)) i + 1 else i, (c1, c2) => c1 + c2)
 
   /* (1) Use `occurrencesOfLang` to compute the ranking of the languages
    *     (`val langs`) by determining the number of Wikipedia articles that
@@ -50,7 +53,9 @@ object WikipediaRanking {
   def makeIndex(langs: List[String], rdd: RDD[WikipediaArticle]): RDD[(String, Iterable[WikipediaArticle])] = {
     rdd
       .flatMap(w => langs
-        .filter(w.text.contains(_))
+        .filter(lang => w.text == lang ||
+          w.text.matches(".*" + lang + "[\\W].*") ||
+          w.text.endsWith(lang))
         .map((_, w)))
       .groupBy(_._1)
       .map(t => (t._1, t._2.map(_._2)))
@@ -78,7 +83,9 @@ object WikipediaRanking {
   def rankLangsReduceByKey(langs: List[String], rdd: RDD[WikipediaArticle]): List[(String, Int)] = {
     rdd
       .flatMap(w => langs
-        .filter(w.text.contains(_))
+        .filter(lang => w.text == lang ||
+          w.text.matches(".*" + lang + "[\\W].*") ||
+          w.text.endsWith(lang))
         .map((_, w)))
       .aggregateByKey(0)((i, _) => i + 1, _ + _)
       .sortBy(_._2, ascending = false)
