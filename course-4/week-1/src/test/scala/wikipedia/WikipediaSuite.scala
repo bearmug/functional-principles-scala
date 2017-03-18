@@ -3,7 +3,7 @@ package wikipedia
 import org.scalatest.{BeforeAndAfterAll, FunSuite, Ignore}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
-import org.apache.spark.{SparkConf, SparkContext, UtilReflection}
+import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.SparkContext._
 
 @RunWith(classOf[JUnitRunner])
@@ -12,8 +12,6 @@ class WikipediaSuite extends FunSuite with BeforeAndAfterAll {
   def initializeWikipediaRanking(): Boolean =
     try {
       WikipediaRanking
-      UtilReflection.amend("localIpAddress", "127.0.0.1")
-      UtilReflection.amend("localIpAddressHostname", "localhost")
       true
     } catch {
       case ex: Throwable =>
