@@ -62,6 +62,8 @@ class StackOverflow extends Serializable {
   // Parsing utilities:
   //
   //
+  val PostingQuestion = 1
+  val PostingAnswer = 2
 
   /** Load postings from the given file */
   def rawPostings(lines: RDD[String]): RDD[Posting] =
@@ -78,7 +80,13 @@ class StackOverflow extends Serializable {
 
   /** Group the questions and answers together */
   def groupedPostings(postings: RDD[Posting]): RDD[(Int, Iterable[(Posting, Posting)])] = {
-    ???
+    val questions: RDD[(Int, Posting)] = postings
+      .filter(_.postingType == PostingQuestion)
+      .map(p => (p.id, p))
+    val answers: RDD[(Int, Posting)] = postings
+      .filter(_.postingType == PostingAnswer)
+      .map(p => (p.parentId.getOrElse(Int.MaxValue), p))
+    questions.join(answers).groupByKey()
   }
 
 
