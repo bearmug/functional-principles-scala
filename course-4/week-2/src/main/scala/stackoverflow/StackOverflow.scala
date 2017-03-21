@@ -105,7 +105,9 @@ class StackOverflow extends Serializable {
       highScore
     }
 
-    ???
+    grouped
+      .map(_._2.maxBy(_._2.score))
+      .map(t => (t._1, t._2.score))
   }
 
 
