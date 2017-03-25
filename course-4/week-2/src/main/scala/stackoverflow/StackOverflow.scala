@@ -27,7 +27,7 @@ object StackOverflow extends StackOverflow {
     val grouped = groupedPostings(raw)        // answers joined with questions under question id
     val scored  = scoredPostings(grouped)    // question paired with highest score from answers
     val vectors = vectorPostings(scored)      // language * positon and cluster step, paired with high score
-//    assert(vectors.count() == 2121822, "Incorrect number of vectors: " + vectors.count())
+    assert(vectors.count() == 2121822, "Incorrect number of vectors: " + vectors.count())
 
     val means   = kmeans(sampleVectors(vectors), vectors, debug = true)
     val results = clusterResults(means, vectors)
@@ -77,7 +77,7 @@ class StackOverflow extends Serializable {
               parentId =       if (arr(3) == "") None else Some(arr(3).toInt),
               score =          arr(4).toInt,
               tags =           if (arr.length >= 6) Some(arr(5).intern()) else None)
-    })
+    }).cache()
 
 
   /** Group the questions and answers together */
@@ -129,12 +129,10 @@ class StackOverflow extends Serializable {
       }
     }
 
-    val res = scored.map(p => firstLangInTag(p._1.tags, langs) match {
+    scored.map(p => firstLangInTag(p._1.tags, langs) match {
       case Some(pos) => (pos * langSpread, p._2)
       case _ => (0, 0)
-    })
-    res.persist()
-    res
+    }).persist()
   }
 
 
@@ -188,7 +186,7 @@ class StackOverflow extends Serializable {
   //
 
   /** Main kmeans computation */
-  @tailrec final def kmeans(meansIn: Array[(Int, Int)], vectors: RDD[(Int, Int)], iter: Int = 1, debug: Boolean = false): Array[(Int, Int)] = {
+  @tailrec final def kmeans(means: Array[(Int, Int)], vectors: RDD[(Int, Int)], iter: Int = 1, debug: Boolean = false): Array[(Int, Int)] = {
 
     @tailrec
     def populate(means: Array[(Int, Int)], l: List[(Int, (Int, Int))]): Array[(Int, Int)] = l match {
@@ -196,11 +194,12 @@ class StackOverflow extends Serializable {
       case (idx, value) :: tail => populate(means.updated(idx, value), tail)
     }
 
-    val means = meansIn
-    val groupBy = vectors.groupBy(findClosest(_, means))
-    val sortBy = groupBy.sortBy(_._1)
-    val map = sortBy.map(t => (t._1, averageVectors(t._2)))
-    val newMeans = populate(means, map.collect().toList)
+    val newMeans = populate(means,
+      vectors
+        .groupBy(findClosest(_, means))
+        .mapValues(averageVectors)
+        .collect()
+        .toList)
 
     val distance = euclideanDistance(means, newMeans)
 
