@@ -77,7 +77,7 @@ class StackOverflow extends Serializable {
               parentId =       if (arr(3) == "") None else Some(arr(3).toInt),
               score =          arr(4).toInt,
               tags =           if (arr.length >= 6) Some(arr(5).intern()) else None)
-    }).cache()
+    })
 
 
   /** Group the questions and answers together */
