@@ -304,9 +304,13 @@ class StackOverflow extends Serializable {
       val clusterSize: Int    = vs.size
 
       val array = vs.map(_._2).toArray.sorted
-      val medianScore: Int = array.length % 2 match {
-        case 0 => (array(array.length / 2) + array((array.length / 2) - 1)) / 2
-        case 1 => array(array.length - 1 / 2)
+      val medianScore: Int = array.length match {
+        case 0 => 0
+        case 1 => array(0)
+        case _ => array.length % 2 match {
+          case 0 => (array(array.length / 2) + array((array.length / 2) - 1)) / 2
+          case 1 => array((array.length - 1) / 2)
+        }
       }
 
       (langLabel, langPercent, clusterSize, medianScore)
