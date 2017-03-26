@@ -7,7 +7,6 @@ import org.apache.spark.rdd.RDD
 
 import annotation.tailrec
 import scala.collection.immutable.TreeSet
-import scala.reflect.ClassTag
 
 /** A raw stackoverflow posting, either a question or an answer */
 case class Posting(postingType: Int, id: Int, acceptedAnswer: Option[Int], parentId: Option[Int], score: Int, tags: Option[String]) extends Serializable
@@ -108,8 +107,10 @@ class StackOverflow extends Serializable {
     }
 
     grouped
-      .map(_._2.maxBy(_._2.score))
-      .map(t => (t._1, t._2.score))
+      .mapValues(v => v.maxBy(_._2.score))
+      .map(t => t._2 match {
+        case (question, bestAnswer) => (question, bestAnswer.score)
+      })
   }
 
 
@@ -189,12 +190,12 @@ class StackOverflow extends Serializable {
   @tailrec final def kmeans(means: Array[(Int, Int)], vectors: RDD[(Int, Int)], iter: Int = 1, debug: Boolean = false): Array[(Int, Int)] = {
 
     @tailrec
-    def populate(means: Array[(Int, Int)], l: List[(Int, (Int, Int))]): Array[(Int, Int)] = l match {
+    def overrideMeans(means: Array[(Int, Int)], l: List[(Int, (Int, Int))]): Array[(Int, Int)] = l match {
       case Nil => means
-      case (idx, value) :: tail => populate(means.updated(idx, value), tail)
+      case (idx, value) :: tail => overrideMeans(means.updated(idx, value), tail)
     }
 
-    val newMeans = populate(means,
+    val newMeans = overrideMeans(means,
       vectors
         .groupBy(findClosest(_, means))
         .mapValues(averageVectors)
