@@ -5,7 +5,9 @@ import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 import Example._
 import org.apache.spark.UtilReflection
+import org.junit.Ignore
 
+@Ignore
 @RunWith(classOf[JUnitRunner])
 class ExampleSuite extends FunSuite with BeforeAndAfterAll {
 
