@@ -35,6 +35,9 @@ object TimeUsage {
 
     val typedDf = timeUsageGroupedTyped(timeUsageSummaryTyped(summaryDf))
     typedDf.show()
+
+    val sqlDf = timeUsageGroupedSql(summaryDf)
+    sqlDf.show()
   }
 
   /** @return The read DataFrame along with its column names. */
@@ -76,6 +79,7 @@ object TimeUsage {
     */
   def row(line: List[String]): Row = line match {
     case h :: t => Row.fromSeq(h :: t.map(_.toDouble))
+    case _ => throw new IllegalStateException("Unreachable code reached!")
   }
 
   /** @return The initial data frame columns partitioned in three groups: primary needs (sleeping, eating, etc.),
@@ -195,7 +199,12 @@ object TimeUsage {
     * @param viewName Name of the SQL view to use
     */
   def timeUsageGroupedSqlQuery(viewName: String): String =
-    ???
+    s"""SELECT
+      | working, sex, age, AVG(primaryNeeds), AVG(work), AVG(other)
+      | FROM $viewName
+      | GROUP BY working, sex, age
+      | ORDER BY working, sex, age
+      | """.stripMargin
 
   /**
     * @return A `Dataset[TimeUsageRow]` from the “untyped” `DataFrame`
