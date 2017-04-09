@@ -4,6 +4,7 @@ import java.nio.file.Paths
 import java.util.regex.Pattern
 
 import org.apache.spark.sql._
+import org.apache.spark.sql.catalyst.expressions.If
 import org.apache.spark.sql.types._
 
 import scala.util.matching.Regex
@@ -141,13 +142,17 @@ object TimeUsage {
     otherColumns: List[Column],
     df: DataFrame
   ): DataFrame = {
-    val workingStatusProjection: Column = ???
-    val sexProjection: Column = ???
-    val ageProjection: Column = ???
+    val workingStatusProjection: Column = when($"telfs" >= 1 and $"telfs" < 3, "working").otherwise("not working")
+    val sexProjection: Column = when($"tesex" === 1, "male").otherwise("female")
+    val ageProjection: Column =
+      when($"teage" >= 15 and $"teage" <= 22, "young").
+        otherwise(
+          when($"teage" >= 23 and $"teage" <= 55, "active").otherwise("elder")
+        )
 
-    val primaryNeedsProjection: Column = ???
-    val workProjection: Column = ???
-    val otherProjection: Column = ???
+    val primaryNeedsProjection: Column = primaryNeedsColumns.reduce((c1, c2) => c1 + c2) / 60
+    val workProjection: Column = workColumns.reduce((c1, c2) => c1 + c2) / 60
+    val otherProjection: Column = otherColumns.reduce((c1, c2) => c1 + c2) / 60
     df
       .select(workingStatusProjection, sexProjection, ageProjection, primaryNeedsProjection, workProjection, otherProjection)
       .where($"telfs" <= 4) // Discard people who are not in labor force
