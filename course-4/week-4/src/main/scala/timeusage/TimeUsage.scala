@@ -5,6 +5,25 @@ import java.nio.file.Paths
 import org.apache.spark.sql._
 import org.apache.spark.sql.types._
 
+/**
+  *
+  * +-----------+------+------+------------------+-------------------+------------------+
+  * |    working|   sex|   age| avg(primaryNeeds)|          avg(work)|        avg(other)|
+  * +-----------+------+------+------------------+-------------------+------------------+
+  * |not working|female|active| 12.44098657326328| 0.5045300642148277|10.787291301809692|
+  * |not working|female| elder|10.937950058072008| 0.3918408826945412|12.394976771196283|
+  * |not working|female| young|12.453092626447285|0.23004265691651435| 11.10018281535649|
+  * |not working|  male|active| 11.39641215106732| 0.9282266009852217| 11.37170771756979|
+  * |not working|  male| elder|10.725056306306307| 0.6667511261261262|12.326998873873872|
+  * |not working|  male| young|11.643116531165312|  0.245420054200542|11.894864498644989|
+  * |    working|female|active|11.540577660750273|  4.156430823743584| 8.136794177881796|
+  * |    working|female| elder|10.617238578343605| 3.9119803063457335| 9.278544194682052|
+  * |    working|female| young| 11.62981898709802|  3.338503755054881| 8.854794916233399|
+  * |    working|  male|active| 10.84043561565212|  5.222658175495459| 7.778519700192437|
+  * |    working|  male| elder|10.409502336194715| 4.7697308848563855| 8.648572929117314|
+  * |    working|  male| young|10.903240058910162|  3.742528227785959|  9.18909671084929|
+  * +-----------+------+------+------------------+-------------------+------------------+
+  */
 /** Main class */
 object TimeUsage {
 
@@ -200,11 +219,11 @@ object TimeUsage {
     */
   def timeUsageGroupedSqlQuery(viewName: String): String =
     s"""SELECT
-      | working, sex, age, AVG(primaryNeeds), AVG(work), AVG(other)
-      | FROM $viewName
-      | GROUP BY working, sex, age
-      | ORDER BY working, sex, age
-      | """.stripMargin
+       | working, sex, age, AVG(primaryNeeds), AVG(work), AVG(other)
+       | FROM $viewName
+       | GROUP BY working, sex, age
+       | ORDER BY working, sex, age
+       | """.stripMargin
 
   /**
     * @return A `Dataset[TimeUsageRow]` from the “untyped” `DataFrame`
