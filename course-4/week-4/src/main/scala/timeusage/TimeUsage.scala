@@ -1,13 +1,9 @@
 package timeusage
 
 import java.nio.file.Paths
-import java.util.regex.Pattern
 
 import org.apache.spark.sql._
-import org.apache.spark.sql.catalyst.expressions.If
 import org.apache.spark.sql.types._
-
-import scala.util.matching.Regex
 
 /** Main class */
 object TimeUsage {
@@ -36,6 +32,9 @@ object TimeUsage {
     val summaryDf = timeUsageSummary(primaryNeedsColumns, workColumns, otherColumns, initDf)
     val finalDf = timeUsageGrouped(summaryDf)
     finalDf.show()
+
+    val typedDf = timeUsageGroupedTyped(timeUsageSummaryTyped(summaryDf))
+    typedDf.show()
   }
 
   /** @return The read DataFrame along with its column names. */
@@ -206,7 +205,14 @@ object TimeUsage {
     *                           cast them at the same time.
     */
   def timeUsageSummaryTyped(timeUsageSummaryDf: DataFrame): Dataset[TimeUsageRow] =
-    ???
+    timeUsageSummaryDf.map(row => TimeUsageRow(
+      row.getAs[String]("working"),
+      row.getAs[String]("sex"),
+      row.getAs[String]("age"),
+      row.getAs[Double]("primaryNeeds"),
+      row.getAs[Double]("work"),
+      row.getAs[Double]("other")
+    ))
 
   /**
     * @return Same as `timeUsageGrouped`, but using the typed API when possible
@@ -220,8 +226,14 @@ object TimeUsage {
     *               Hint: you should use the `groupByKey` and `typed.avg` methods.
     */
   def timeUsageGroupedTyped(summed: Dataset[TimeUsageRow]): Dataset[TimeUsageRow] = {
-    import org.apache.spark.sql.expressions.scalalang.typed
-    ???
+    summed
+      .groupByKey((row: TimeUsageRow) => (row.working, row.sex, row.age))
+      .agg(avg($"primaryNeeds").as[Double], avg($"work").as[Double], avg($"other").as[Double])
+      .sort($"key._1", $"key._2", $"key._3")
+      .map {
+        case ((working, sex, age), primaryNeeds, work, other) =>
+          TimeUsageRow(working, sex, age, primaryNeeds, work, other)
+      }
   }
 }
 
