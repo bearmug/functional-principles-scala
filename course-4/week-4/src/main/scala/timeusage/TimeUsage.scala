@@ -6,7 +6,7 @@ import org.apache.spark.sql._
 import org.apache.spark.sql.types._
 
 /**
-  *
+  * Raw unrounded output
   * +-----------+------+------+------------------+-------------------+------------------+
   * |    working|   sex|   age| avg(primaryNeeds)|          avg(work)|        avg(other)|
   * +-----------+------+------+------------------+-------------------+------------------+
@@ -23,6 +23,24 @@ import org.apache.spark.sql.types._
   * |    working|  male| elder|10.409502336194715| 4.7697308848563855| 8.648572929117314|
   * |    working|  male| young|10.903240058910162|  3.742528227785959|  9.18909671084929|
   * +-----------+------+------+------------------+-------------------+------------------+
+  *
+  * Rounded statistics
+  * +-----------+------+------+------------+----+-----+
+  * |    working|   sex|   age|primaryNeeds|work|other|
+  * +-----------+------+------+------------+----+-----+
+  * |not working|female|active|        12.0| 1.0| 11.0|
+  * |not working|female| elder|        11.0| 0.0| 12.0|
+  * |not working|female| young|        12.0| 0.0| 11.0|
+  * |not working|  male|active|        11.0| 1.0| 11.0|
+  * |not working|  male| elder|        11.0| 1.0| 12.0|
+  * |not working|  male| young|        12.0| 0.0| 12.0|
+  * |    working|female|active|        12.0| 4.0|  8.0|
+  * |    working|female| elder|        11.0| 4.0|  9.0|
+  * |    working|female| young|        12.0| 3.0|  9.0|
+  * |    working|  male|active|        11.0| 5.0|  8.0|
+  * |    working|  male| elder|        10.0| 5.0|  9.0|
+  * |    working|  male| young|        11.0| 4.0|  9.0|
+  * +-----------+------+------+------------+----+-----+
   */
 /** Main class */
 object TimeUsage {
@@ -200,7 +218,7 @@ object TimeUsage {
   def timeUsageGrouped(summed: DataFrame): DataFrame = {
     summed
       .groupBy("working", "sex", "age")
-      .agg(avg("primaryNeeds") as "primaryNeeds", avg("work") as "work", avg("other") as "other")
+      .agg(round(avg("primaryNeeds")) as "primaryNeeds", round(avg("work")) as "work", round(avg("other")) as "other")
       .sort("working", "sex", "age")
   }
 
@@ -219,7 +237,7 @@ object TimeUsage {
     */
   def timeUsageGroupedSqlQuery(viewName: String): String =
     s"""SELECT
-       | working, sex, age, AVG(primaryNeeds), AVG(work), AVG(other)
+       | working, sex, age, ROUND(AVG(primaryNeeds)), ROUND(AVG(work)), ROUND(AVG(other))
        | FROM $viewName
        | GROUP BY working, sex, age
        | ORDER BY working, sex, age
@@ -260,7 +278,7 @@ object TimeUsage {
       .sort($"key._1", $"key._2", $"key._3")
       .map {
         case ((working, sex, age), primaryNeeds, work, other) =>
-          TimeUsageRow(working, sex, age, primaryNeeds, work, other)
+          TimeUsageRow(working, sex, age, primaryNeeds.round, work.round, other.round)
       }
   }
 }
