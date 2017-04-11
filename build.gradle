@@ -20,10 +20,16 @@ subprojects {
         compile 'org.scala-lang.modules:scala-swing_2.11:1.0.1'
         compile 'org.apache.spark:spark-core_2.11:1.2.1'
 
+        // capstone dependencies
+        compile 'com.sksamuel.scrimage:scrimage-core_2.11:2.1.6'
+        compile 'com.typesafe.akka:akka-stream_2.11:2.4.12'
+        compile 'io.monix:monix_2.11:2.1.1'
+        compile 'co.fs2:fs2-io_2.11:0.9.2'
+
         testCompile 'junit:junit:4.12'
         testCompile 'org.scalatest:scalatest_2.11:2.2.6'
         testCompile 'com.storm-enroute:scalameter_2.11:0.6'
+        testCompile 'com.typesafe.akka:akka-stream-testkit_2.11:2.4.12'
         testRuntime 'org.scala-lang.modules:scala-xml_2.11:1.0.5'
     }
 }
-
