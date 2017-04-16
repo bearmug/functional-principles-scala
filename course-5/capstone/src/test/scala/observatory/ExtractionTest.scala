@@ -7,5 +7,7 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class ExtractionTest extends FunSuite {
 
-  
+  ignore("locateTemperatures works fine for properly populated input") {
+
+  }
 }
