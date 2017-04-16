@@ -9,6 +9,7 @@ import scala.io.{BufferedSource, Source}
 import scala.util.matching.Regex
 
 sealed abstract class TemperatureService {
+  def yar(itr: Itr): scala.Iterable[(Location, Double)]
 
   def itr(year: Int, stnKey: String, stnSrc: BufferedSource, tmpSrc: BufferedSource): Itr
 
@@ -62,6 +63,14 @@ object ServiceLocator {
         }.toIterable
     }
 
+    override def yar(itr: Itr): Iterable[(Location, Double)] = itr
+      .groupBy(_._2)
+      .mapValues(_.foldLeft((0.0, 0)) {
+        case ((accTemp, counter), (_, _, temp)) => (accTemp + temp, counter + 1)
+      })
+      .map {
+        case (loc, (totalTemp, totalMeasurements)) => (loc, totalTemp / totalMeasurements)
+      }
   }
 
   def servePlain(): TemperatureService = new PlainService

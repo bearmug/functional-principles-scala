@@ -76,4 +76,22 @@ class ServiceLocatorTest extends FunSuite {
       Seq.empty
     )
   }
+
+  test("plainService calc avg temperatures for correct input") {
+    val service = new PlainService()
+    assert(service.yar(service.itr(
+      2015,
+      "stations-source-file",
+      buff(
+        """007026,2212,+12.200,-020.010
+          |1,2,+1.200,-01.010""".stripMargin),
+      buff(
+        """007026,2212,07,11,+78.8
+          |007026,2212,07,12,8.8
+          |007026,2212,11,13,-56.2""".stripMargin))) ==
+      Map(
+        (Location(12.2,-20.01), -11.962962962962962)
+      )
+    )
+  }
 }

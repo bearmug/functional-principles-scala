@@ -19,4 +19,13 @@ class ExtractionTest extends FunSuite {
         )
     )
   }
+
+  test("avg works fine for properly populated input") {
+    val temperatures = Extraction.locateTemperatures(2015, "/stations-test.csv", "/2015-test.csv")
+
+    assert(
+      Extraction.locationYearlyAverageRecords(temperatures) ==
+        Map(Location(12.2, -20.01) -> 19.962962962962962)
+    )
+  }
 }

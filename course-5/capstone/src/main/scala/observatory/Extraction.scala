@@ -25,7 +25,6 @@ object Extraction {
     * @return A sequence containing, for each location, the average temperature over the year.
     */
   def locationYearlyAverageRecords(records: Itr): Iterable[(Location, Double)] = {
-    ???
+    service.yar(records: Itr)
   }
-
 }
