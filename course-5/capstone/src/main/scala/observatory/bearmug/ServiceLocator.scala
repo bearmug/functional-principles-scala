@@ -54,10 +54,10 @@ object ServiceLocator {
       tmpSrc
         .getLines()
         .flatMap {
-          case tempPattern(stn, wban, month, day, tempF) => Some(
+          case tempPattern(stn, wban, month, day, tempF) => Some((
             LocalDate.of(year, month.toInt, day.toInt),
             stationsMap(s"$stn:$wban"),
-            Conversions.toCelsius(tempF.toDouble))
+            Conversions.toCelsius(tempF.toDouble)))
           case _ => None
         }.toIterable
     }
