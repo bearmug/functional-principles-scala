@@ -16,7 +16,11 @@ gradle-app.setting
 # Intellij IDEA stuff
 *.iml
 .idea/
+out/**
 
 # SBT stuff
 **/project
 **/target
+
+# input data
+**/main/resources/*.csv
