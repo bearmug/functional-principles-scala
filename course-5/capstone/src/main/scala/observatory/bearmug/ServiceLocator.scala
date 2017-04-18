@@ -76,13 +76,54 @@ object ServiceLocator {
   }
 
   class ParallelService extends TemperatureService {
-    override def yar(itr: Itr): Iterable[(Location, Double)] = ???
 
-    override def itr(year: Int, stnKey: String, stnSrc: BufferedSource, tmpSrc: BufferedSource): Itr = ???
+    val chunkSize = 1024 * 32
 
-    override def stationsData(stnSrc: BufferedSource): Map[String, Location] = ???
+    def stationsData(stnSrc: BufferedSource): Map[String, Location] = stnSrc
+      .getLines()
+      .grouped(chunkSize)
+      .toIterable
+      .par
+      .flatMap(_.flatMap {
+        case stnPattern(stn, wban, latitude, longitude) =>
+          Option(s"$stn:$wban" -> Location(latitude.toDouble, longitude.toDouble))
+        case _ => None
+      }).toMap.seq
+
+    override def itr(
+                      year: Int,
+                      stnKey: String,
+                      stnSrc: BufferedSource,
+                      tmpSrc: BufferedSource): Itr = {
+
+      val stationsMap = stationsData(stnSrc)
+
+      tmpSrc
+        .getLines()
+        .grouped(chunkSize)
+        .toIterable.par
+        .flatMap(_.flatMap {
+          case tempPattern(stn, wban, month, day, tempF) => Some((
+            LocalDate.of(year, month.toInt, day.toInt),
+            stationsMap(s"$stn:$wban"),
+            Conversions.toCelsius(tempF.toDouble)))
+          case _ => None
+        }).seq
+    }
+
+    override def yar(itr: Itr): Iterable[(Location, Double)] = itr
+      .par
+      .groupBy(_._2)
+      .mapValues { values =>
+        values.aggregate((0.0, 0))(
+          (acc, data) => (acc._1 + data._3, acc._2 + 1),
+          (l, r) => (l._1 + r._1, l._2 + r._2)) match {
+          case (temp, count) => temp / count
+        }
+      }.seq
   }
 
   def servePlain(): TemperatureService = new PlainService
+
   def serveParallel(): TemperatureService = new ParallelService
 }
