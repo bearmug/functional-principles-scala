@@ -13,6 +13,8 @@ sealed abstract class TemperatureService {
 
   def itr(year: Int, stnKey: String, stnSrc: BufferedSource, tmpSrc: BufferedSource): Itr
 
+  def stationsData(stnSrc: BufferedSource): Map[String, Location]
+
   final def temperaturesOf(year: Int, stationsFile: String, temperaturesFile: String): Itr =
     itr(
       year,
@@ -73,5 +75,14 @@ object ServiceLocator {
       }
   }
 
+  class ParallelService extends TemperatureService {
+    override def yar(itr: Itr): Iterable[(Location, Double)] = ???
+
+    override def itr(year: Int, stnKey: String, stnSrc: BufferedSource, tmpSrc: BufferedSource): Itr = ???
+
+    override def stationsData(stnSrc: BufferedSource): Map[String, Location] = ???
+  }
+
   def servePlain(): TemperatureService = new PlainService
+  def serveParallel(): TemperatureService = new ParallelService
 }
