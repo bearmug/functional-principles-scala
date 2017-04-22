@@ -15,28 +15,29 @@ import scala.util.Random
 @Fork(value = 1)
 class ServiceLocatorBenchmark {
 
-  def seqService = ServiceLocator.servePlain()
+  val seqService = ServiceLocator.servePlain()
 
-  def parService = ServiceLocator.serveParallel()
+  val parService = ServiceLocator.serveParallel()
 
   println(s"build dir is ${System.getProperty("buildDir")}")
 
   val year = 2015
-  val stationsFile = s"${System.getProperty("buildDir")}/files/stations-${Random.nextInt()}"
-  val temperaturesFile = s"${System.getProperty("buildDir")}/files/temperatures-${Random.nextInt()}"
+  val resPath = s"${System.getProperty("buildDir")}/resources/test"
+  val stationsFile = s"/jmh/stations-${Random.nextInt()}"
+  val temperaturesFile = s"/jmh/temperatures-${Random.nextInt()}"
   val preparedData = ServiceLocator.servePlain().temperaturesOf(year, stationsFile, temperaturesFile)
 
   @Setup
-  def setup() = {
+  def setup(): Unit = {
     val stations = (1 to 10000).map(number => s"$number,$number,${Random.nextDouble()},${Random.nextDouble()}\n")
-    new PrintWriter(stationsFile) {
+    new PrintWriter(resPath + stationsFile) {
       stations.foreach(write); close()
     }
     val temperatures = (1 to 10000000).map(_ => {
       val station = Random.nextInt(10000)
       s"$station,$station,${Random.nextInt(11)},${1 + Random.nextInt(28)},${Random.nextInt(100) - 50.0}\n"
     })
-    new PrintWriter(temperaturesFile) {
+    new PrintWriter(resPath + temperaturesFile) {
       temperatures.foreach(write); close()
     }
   }

@@ -53,7 +53,9 @@ subprojects {
 
     jmh {
         include = '.*'
-        jmhVersion = '1.17.5'
+        jmhVersion = '1.18'
         jvmArgs = "-DbuildDir=$buildDir"
+        duplicateClassesStrategy = 'warn'
+        zip64 = true
     }
 }
