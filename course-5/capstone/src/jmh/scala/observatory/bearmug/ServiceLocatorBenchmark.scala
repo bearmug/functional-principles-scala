@@ -5,6 +5,7 @@ import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 
 import observatory.Location
+import observatory.bearmug.ServiceLocator.Itr
 import org.openjdk.jmh.annotations._
 
 import scala.util.Random
@@ -19,27 +20,30 @@ class ServiceLocatorBenchmark {
 
   val parService = ServiceLocator.serveParallel()
 
-  println(s"build dir is ${System.getProperty("buildDir")}")
-
   val year = 2015
   val resPath = s"${System.getProperty("buildDir")}/resources/test"
-  val stationsFile = s"/jmh/stations-${Random.nextInt()}"
-  val temperaturesFile = s"/jmh/temperatures-${Random.nextInt()}"
-  val preparedData = ServiceLocator.servePlain().temperaturesOf(year, stationsFile, temperaturesFile)
+  private val signature = Random.nextInt(10000000)
+  val stationsFile = s"/stations-jmh-$signature"
+  val temperaturesFile = s"/temperatures-jmh-$signature"
+  var preparedData: Itr = _
 
   @Setup
   def setup(): Unit = {
+    println(s"writing stations data to ${resPath + stationsFile}")
     val stations = (1 to 10000).map(number => s"$number,$number,${Random.nextDouble()},${Random.nextDouble()}\n")
     new PrintWriter(resPath + stationsFile) {
-      stations.foreach(write); close()
+      stations.foreach(write); flush(); close()
     }
+    println(s"writing temperature data to ${resPath + temperaturesFile}")
     val temperatures = (1 to 10000000).map(_ => {
       val station = Random.nextInt(10000)
       s"$station,$station,${Random.nextInt(11)},${1 + Random.nextInt(28)},${Random.nextInt(100) - 50.0}\n"
     })
     new PrintWriter(resPath + temperaturesFile) {
-      temperatures.foreach(write); close()
+      temperatures.foreach(write); flush(); close()
     }
+
+    preparedData = ServiceLocator.servePlain().temperaturesOf(year, stationsFile, temperaturesFile)
   }
 
   @Benchmark
