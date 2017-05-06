@@ -43,13 +43,13 @@ object Interpolation {
         case (None, (t, c) :: _) if value < t => c
         case (None, (t, c) :: tail) => interpolate(Some((t, c)), tail)
         case (Some((_, c)), Nil) => c
-        case (Some((_, c1)), (t2, c2) :: tail) if value > t2 => interpolate(Some((t2, c2)), tail)
+        case (Some((_, _)), (t2, c2) :: tail) if value > t2 => interpolate(Some((t2, c2)), tail)
         case (Some((t1, Color(r1, g1, b1))), (t2, Color(r2, g2, b2)) :: _) => {
           val ratio: Double = (value - t1) / (t2 - t1)
           Color(
-            r1 + ((r2 - r1) * ratio).toInt,
-            g1 + ((g2 - g1) * ratio).toInt,
-            b1 + ((b2 - b1) * ratio).toInt
+            (r1 + (r2 - r1) * ratio).round.toInt,
+            (g1 + (g2 - g1) * ratio).round.toInt,
+            (b1 + (b2 - b1) * ratio).round.toInt
           )
         }
       }

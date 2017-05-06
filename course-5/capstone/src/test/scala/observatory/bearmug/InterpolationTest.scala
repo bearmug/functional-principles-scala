@@ -54,9 +54,13 @@ class InterpolationTest extends FunSuite {
 
   test("color interpolated well for medium values") {
     assert(plain.interpolateColor(temperatures, 33.0) == Color(255, 9, 9))
-    assert(plain.interpolateColor(temperatures, 59.0) == Color(255, 245, 245))
+    assert(plain.interpolateColor(temperatures, 59.0) == Color(255, 246, 246))
     assert(plain.interpolateColor(temperatures, 1.0) == Color(21, 255, 234))
-    assert(plain.interpolateColor(temperatures, 11.0) == Color(233, 255, 22))
+    assert(plain.interpolateColor(temperatures, 11.0) == Color(234, 255, 21))
+  }
+
+  test("color interpolated for two temperatures") {
+    assert(plain.interpolateColor(List((-1.0,Color(255,0,0)), (0.0,Color(0,0,255))), -0.5) == Color(128, 0, 128))
   }
 
   test("color picked from list for matches values") {
