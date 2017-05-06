@@ -1,11 +1,14 @@
 package observatory.bearmug
 
-import observatory.Location
+import observatory.{Color, Location}
 
+import scala.annotation.tailrec
 import scala.math._
 
 trait Interpolation {
   def predictTemperature(temperatures: Iterable[(Location, Double)], location: Location): Double
+
+  def interpolateColor(points: Iterable[(Double, Color)], value: Double): Color
 }
 
 object Interpolation {
@@ -30,6 +33,28 @@ object Interpolation {
         case Some((_, temp)) => temp
         case None => interpolate(temperatures, location)
       }
+    }
+
+    override def interpolateColor(points: Iterable[(Double, Color)], value: Double): Color = {
+      @tailrec
+      def interpolate(left: Option[(Double, Color)], pts: Iterable[(Double, Color)]): Color = (left, pts) match {
+        case (None, Nil) => throw new IllegalStateException(s"nothing interpolate for $value")
+        case (_, (t, c) :: _) if value == t => c
+        case (None, (t, c) :: _) if value < t => c
+        case (None, (t, c) :: tail) => interpolate(Some((t, c)), tail)
+        case (Some((_, c)), Nil) => c
+        case (Some((_, c1)), (t2, c2) :: tail) if value > t2 => interpolate(Some((t2, c2)), tail)
+        case (Some((t1, Color(r1, g1, b1))), (t2, Color(r2, g2, b2)) :: _) => {
+          val ratio: Double = (value - t1) / (t2 - t1)
+          Color(
+            r1 + ((r2 - r1) * ratio).toInt,
+            g1 + ((g2 - g1) * ratio).toInt,
+            b1 + ((b2 - b1) * ratio).toInt
+          )
+        }
+      }
+
+      interpolate(None, points.toList.sortBy(_._1))
     }
   }
 

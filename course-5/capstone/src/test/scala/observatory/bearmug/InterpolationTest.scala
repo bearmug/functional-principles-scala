@@ -1,10 +1,8 @@
 package observatory.bearmug
 
-import observatory.Location
+import observatory.{Color, Location}
 import observatory.bearmug.Interpolation.plain
 import org.scalatest.FunSuite
-
-import org.scalatest._
 import org.scalatest.Matchers._
 
 class InterpolationTest extends FunSuite {
@@ -31,6 +29,41 @@ class InterpolationTest extends FunSuite {
       ),
         Location(11, 11)) === 10.0 +- .05
     )
+  }
+
+  val temperatures = List(
+    (32.0, Color(255, 0, 0)),
+    (0.0, Color(0, 255, 255)),
+    (60.0, Color(255, 255, 255)),
+    (12.0, Color(255, 255, 0)),
+    (-50.0, Color(33, 0, 107)),
+    (-15.0, Color(0, 0, 255)),
+    (-27.0, Color(255, 0, 255)),
+    (-60.0, Color(0, 0, 0))
+  )
+
+  test("color interpolated to black for very low temperature") {
+    assert(plain.interpolateColor(temperatures, -700) == Color(0, 0, 0))
+    assert(plain.interpolateColor(temperatures, -60.6) == Color(0, 0, 0))
+  }
+
+  test("color interpolated to white for very high temperature") {
+    assert(plain.interpolateColor(temperatures, 700) == Color(255, 255, 255))
+    assert(plain.interpolateColor(temperatures, 60.5) == Color(255, 255, 255))
+  }
+
+  test("color interpolated well for medium values") {
+    assert(plain.interpolateColor(temperatures, 33.0) == Color(255, 9, 9))
+    assert(plain.interpolateColor(temperatures, 59.0) == Color(255, 245, 245))
+    assert(plain.interpolateColor(temperatures, 1.0) == Color(21, 255, 234))
+    assert(plain.interpolateColor(temperatures, 11.0) == Color(233, 255, 22))
+  }
+
+  test("color picked from list for matches values") {
+    assert(plain.interpolateColor(temperatures, 32.0) == Color(255, 0, 0))
+    assert(plain.interpolateColor(temperatures, 60.0) == Color(255, 255, 255))
+    assert(plain.interpolateColor(temperatures, -27.0) == Color(255, 0, 255))
+    assert(plain.interpolateColor(temperatures, -60.0) == Color(0, 0, 0))
   }
 
 }

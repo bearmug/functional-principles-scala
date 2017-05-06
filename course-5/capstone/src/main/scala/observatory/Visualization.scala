@@ -1,6 +1,8 @@
 package observatory
 
 import com.sksamuel.scrimage.{Image, Pixel}
+import observatory.bearmug.Interpolation
+import observatory.bearmug.Interpolation.plain
 
 /**
   * 2nd milestone: basic visualization
@@ -13,7 +15,7 @@ object Visualization {
     * @return The predicted temperature at `location`
     */
   def predictTemperature(temperatures: Iterable[(Location, Double)], location: Location): Double = {
-    ???
+    plain.predictTemperature(temperatures, location)
   }
 
   /**
@@ -22,7 +24,7 @@ object Visualization {
     * @return The color that corresponds to `value`, according to the color scale defined by `points`
     */
   def interpolateColor(points: Iterable[(Double, Color)], value: Double): Color = {
-    ???
+    plain.interpolateColor(points, value)
   }
 
   /**
