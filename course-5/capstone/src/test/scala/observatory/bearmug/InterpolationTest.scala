@@ -1,9 +1,12 @@
 package observatory.bearmug
 
-import observatory.{Color, Location}
+import com.sksamuel.scrimage.Pixel
 import observatory.bearmug.Interpolation.plain
+import observatory.{Color, Location}
 import org.scalatest.FunSuite
 import org.scalatest.Matchers._
+
+import scala.collection.immutable
 
 class InterpolationTest extends FunSuite {
 
@@ -60,7 +63,7 @@ class InterpolationTest extends FunSuite {
   }
 
   test("color interpolated for two temperatures") {
-    assert(plain.interpolateColor(List((-1.0,Color(255,0,0)), (0.0,Color(0,0,255))), -0.5) == Color(128, 0, 128))
+    assert(plain.interpolateColor(List((-1.0, Color(255, 0, 0)), (0.0, Color(0, 0, 255))), -0.5) == Color(128, 0, 128))
   }
 
   test("color picked from list for matches values") {
@@ -68,6 +71,23 @@ class InterpolationTest extends FunSuite {
     assert(plain.interpolateColor(temperatures, 60.0) == Color(255, 255, 255))
     assert(plain.interpolateColor(temperatures, -27.0) == Color(255, 0, 255))
     assert(plain.interpolateColor(temperatures, -60.0) == Color(0, 0, 0))
+  }
+
+  test("visualize works fine for a set of points") {
+    val locations = List(
+      (Location(40, 10), -30.0),
+      (Location(10, -12), 5.0),
+      (Location(12, 60), 15.0),
+      (Location(82, -42), 40.0)
+    )
+    val image = plain.visualize(locations, temperatures)
+    assert(image.forall((x, y, pixel: Pixel) => {
+      val lon = x - 180
+      val lat = 90 - y
+      val temp = plain.predictTemperature(locations, Location(lat, lon))
+      val color = plain.interpolateColor(temperatures, temp)
+      color.red == pixel.red && color.green == pixel.green && color.blue == pixel.blue
+    }))
   }
 
 }
