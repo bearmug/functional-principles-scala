@@ -12,6 +12,8 @@ trait Interpolation {
   def interpolateColor(points: Iterable[(Double, Color)], value: Double): Color
 
   def visualize(temperatures: Iterable[(Location, Double)], colors: Iterable[(Double, Color)]): Image
+
+  def tileLocation(zoom: Int, x: Int, y: Int): Location
 }
 
 object Interpolation {
@@ -72,6 +74,14 @@ object Interpolation {
         .toArray
 
       Image(360, 180, data)
+    }
+
+    override def tileLocation(zoom: Int, x: Int, y: Int): Location = {
+      val base = Math.pow(2.0, zoom)
+      val longitude = x / base * 360.0 - 180.0
+      val latitudeRad = math.atan(math.sinh(math.Pi * (1 - 2 * y / base)))
+      val latitude = math.toDegrees(latitudeRad)
+      Location(latitude, longitude)
     }
   }
 

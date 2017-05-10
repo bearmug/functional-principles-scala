@@ -6,8 +6,6 @@ import observatory.{Color, Location}
 import org.scalatest.FunSuite
 import org.scalatest.Matchers._
 
-import scala.collection.immutable
-
 class InterpolationTest extends FunSuite {
 
   test("nearest point temperature chosen if distance less than 1.0 km") {
@@ -88,6 +86,16 @@ class InterpolationTest extends FunSuite {
       val color = plain.interpolateColor(temperatures, temp)
       color.red == pixel.red && color.green == pixel.green && color.blue == pixel.blue
     }))
+  }
+
+  test("tileLocation works fine for initial zoom level") {
+    assert(plain.tileLocation(0, 1, 1) == Location(-85.05112877980659, 180.0))
+    assert(plain.tileLocation(0, 0, 0) == Location(85.05112877980659,-180.0))
+  }
+
+  test("tileLocation works fine for 10th zoom level") {
+    assert(plain.tileLocation(10, 10, 10) == Location(84.7383871209534,-176.484375))
+    assert(plain.tileLocation(10, 130, 310) == Location(57.704147234341924,-134.296875))
   }
 
 }
