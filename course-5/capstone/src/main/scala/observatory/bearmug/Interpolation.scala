@@ -14,6 +14,13 @@ trait Interpolation {
   def visualize(temperatures: Iterable[(Location, Double)], colors: Iterable[(Double, Color)]): Image
 
   def tileLocation(zoom: Int, x: Int, y: Int): Location
+
+  def tile(temperatures: Iterable[(Location, Double)], colors: Iterable[(Double, Color)], zoom: Int, x: Int, y: Int): Image
+
+  def generateTiles[Data](
+                           yearlyData: Iterable[(Int, Data)],
+                           generateImage: (Int, Int, Int, Int, Data) => Unit
+                         ): Unit
 }
 
 object Interpolation {
@@ -70,7 +77,7 @@ object Interpolation {
           lon <- -180 to 179
         } yield predictTemperature(temperatures, Location(lat, lon))
       }.map(interpolateColor(colors, _))
-        .map(c => Pixel(c.red, c.green, c.blue, 255))
+        .map(c => Pixel(c.red, c.green, c.blue, 127))
         .toArray
 
       Image(360, 180, data)
@@ -83,6 +90,28 @@ object Interpolation {
       val latitude = math.toDegrees(latitudeRad)
       Location(latitude, longitude)
     }
+
+    override def tile(temperatures: Iterable[(Location, Double)], colors: Iterable[(Double, Color)], zoom: Int, x: Int, y: Int): Image = {
+      val data = {
+        for {
+          yZoom <- (256 * y) until (256 * (y + 1))
+          xZoom <- (256 * x) until (256 * (x + 1))
+        } yield tileLocation(zoom + 8, xZoom, yZoom)
+      }.map(predictTemperature(temperatures, _))
+        .map(interpolateColor(colors, _))
+        .map(c => Pixel(c.red, c.green, c.blue, 127))
+        .toArray
+      Image(256, 256, data)
+    }
+
+    override def generateTiles[Data](yearlyData: Iterable[(Int, Data)], generateImage: (Int, Int, Int, Int, Data) => Unit): Unit =
+      yearlyData.foreach {
+        case (year, data) => for {
+          zoomLevel <- 0 to 3
+          x <- 0 until Math.pow(2, zoomLevel).toInt
+          y <- 0 until Math.pow(2, zoomLevel).toInt
+        } yield generateImage(year, zoomLevel, x, y, data)
+      }
   }
 
   def plain: Interpolation = PlainInterpolation

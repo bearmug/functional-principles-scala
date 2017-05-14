@@ -27,7 +27,7 @@ object Interaction {
     * @return A 256×256 image showing the contents of the tile defined by `x`, `y` and `zooms`
     */
   def tile(temperatures: Iterable[(Location, Double)], colors: Iterable[(Double, Color)], zoom: Int, x: Int, y: Int): Image = {
-    ???
+    plain.tile(temperatures, colors, zoom, x, y)
   }
 
   /**
@@ -42,7 +42,7 @@ object Interaction {
                            yearlyData: Iterable[(Int, Data)],
                            generateImage: (Int, Int, Int, Int, Data) => Unit
                          ): Unit = {
-    ???
+    plain.generateTiles(yearlyData, generateImage)
   }
 
 }
