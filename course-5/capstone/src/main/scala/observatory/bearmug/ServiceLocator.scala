@@ -31,8 +31,8 @@ object Conversions {
 object ServiceLocator {
 
   type Itr = Iterable[(LocalDate, Location, Double)]
-  val stnPattern: Regex = "(\\d+),(\\d+),([-|\\+]+\\d+\\.+\\d+),([-|\\+]+\\d+\\.+\\d+)".r
-  val tempPattern: Regex = "(\\d+),(\\d+),(\\d+),(\\d+),([+|-]?\\d+\\.?\\d*)".r
+  val stnPattern: Regex = "(\\d*),(\\d*),([-|\\+]+\\d+\\.+\\d+),([-|\\+]+\\d+\\.+\\d+)".r
+  val tempPattern: Regex = "(\\d*),(\\d*),(\\d+),(\\d+),([+|-]?\\d+\\.?\\d*)".r
 
   class PlainService extends TemperatureService {
 
