@@ -16,7 +16,7 @@ sealed abstract class TemperatureService {
   final def temperaturesOf(year: Int, stationsFile: String, temperaturesFile: String): Itr =
     itr(
       year,
-      stationsFile: String,
+      stationsFile,
       Source.fromInputStream(getClass.getResourceAsStream(stationsFile)),
       Source.fromInputStream(getClass.getResourceAsStream(temperaturesFile))
     )
@@ -31,8 +31,8 @@ object Conversions {
 object ServiceLocator {
 
   type Itr = Iterable[(LocalDate, Location, Double)]
-  val stnPattern: Regex = "(\\d+),(\\d+),([-|\\+]+\\d+\\.+\\d+),([-|\\+]+\\d+\\.+\\d+)".r
-  val tempPattern: Regex = "(\\d+),(\\d+),(\\d+),(\\d+),([+|-]?\\d+\\.\\d+)".r
+  val stnPattern: Regex = "(\\d*),(\\d*),([-|\\+]+\\d+\\.+\\d+),([-|\\+]+\\d+\\.+\\d+)".r
+  val tempPattern: Regex = "(\\d*),(\\d*),(\\d+),(\\d+),([+|-]?\\d+\\.?\\d*)".r
 
   class PlainService extends TemperatureService {
 
@@ -40,7 +40,7 @@ object ServiceLocator {
       .getLines()
       .flatMap {
         case stnPattern(stn, wban, latitude, longitude) =>
-          Option(s"$stn:$wban" -> Location(latitude.toDouble, longitude.toDouble))
+          Some(s"$stn:$wban" -> Location(latitude.toDouble, longitude.toDouble))
         case _ => None
       }.toMap
 

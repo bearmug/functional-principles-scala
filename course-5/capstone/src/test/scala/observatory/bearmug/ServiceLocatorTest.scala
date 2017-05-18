@@ -33,8 +33,6 @@ class ServiceLocatorTest extends FunSuite {
   }
 
   test("plainService ignore stationsData well for wrong format") {
-    assert(new PlainService().stationsData(buff(",2212,+12.200,-020.010")) == Map.empty)
-    assert(new PlainService().stationsData(buff("007026,,+12.200,-020.010")) == Map.empty)
     assert(new PlainService().stationsData(buff("007026,2212,12.200,-020.010")) == Map.empty)
     assert(new PlainService().stationsData(buff("007026,2212,+12,-020.010")) == Map.empty)
     assert(new PlainService().stationsData(buff("007026,2212,+12.,-020.010")) == Map.empty)
@@ -67,12 +65,10 @@ class ServiceLocatorTest extends FunSuite {
     assert(new PlainService().itr(2015, "stations-source-file",
       buff("007026,2212,+12.200,-020.010"),
       buff(
-        """,2212,07,11,78.8
-          |007026,,07,12,68.8
-          |007026,2212,,12,68.8
+        """007026,2212,,12,68.8
           |007026,2212,07,,68.8
           |007026,2212,07,12,
-          |007026,2212,07,12,68""".stripMargin)) ==
+          |007026,2212,07,12,.68""".stripMargin)) ==
       Seq.empty
     )
   }
