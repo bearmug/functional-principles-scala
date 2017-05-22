@@ -28,8 +28,8 @@ object Interpolation {
   val R = 6372.8
 
   def distance(l1: Location, l2: Location): Double =
-    R * acos(sin(l1.lon.toRadians) * sin(l2.lon.toRadians) +
-      cos(l1.lon.toRadians) * cos(l2.lon.toRadians) * cos(abs(l1.lat - l2.lat).toRadians))
+    R * acos(sin(l1.lat.toRadians) * sin(l2.lat.toRadians) +
+      cos(l1.lat.toRadians) * cos(l2.lat.toRadians) * cos(abs(l1.lon - l2.lon).toRadians))
 
   private object PlainInterpolation extends Interpolation {
 
