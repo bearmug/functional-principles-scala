@@ -42,7 +42,7 @@ object Manipulation {
     */
   def deviation(temperatures: Iterable[(Location, Double)], normals: (Int, Int) => Double): (Int, Int) => Double = {
     (lat, lon) => {
-      normals(lat, lon) - makeGrid(temperatures)(lat, lon)
+      makeGrid(temperatures)(lat, lon) - normals(lat, lon)
     }
   }
 
