@@ -8,9 +8,22 @@ import org.scalatest.Matchers._
 
 class InterpolationTest extends FunSuite {
 
+  test("distance calculated correctly") {
+    assert(Interpolation.distance(Location(55.870488, 37.411361), Location(55.872008, 37.420192)) < 0.6)
+  }
+
   test("nearest point temperature chosen if distance less than 1.0 km") {
     assert(
       plain.predictTemperature(List((Location(10, 10), 11)), Location(10.0001, 10.00001)) == 11
+    )
+
+    assert(
+      plain.predictTemperature(List((Location(55.870488, 37.411361), 12), (Location(55.890488, 37.471361), 120)),
+        Location(55.872008, 37.420192)) == 12
+    )
+
+    assert(
+      plain.predictTemperature(List((Location(55.864175, 37.402059), 12)), Location(55.875008, 37.423492)) == 12
     )
   }
 

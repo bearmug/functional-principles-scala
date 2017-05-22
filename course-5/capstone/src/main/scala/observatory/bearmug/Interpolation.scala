@@ -25,13 +25,15 @@ trait Interpolation {
 
 object Interpolation {
 
+  val R = 6372.8
+
+  def distance(l1: Location, l2: Location): Double =
+    R * acos(sin(l1.lat.toRadians) * sin(l2.lat.toRadians) +
+      cos(l1.lat.toRadians) * cos(l2.lat.toRadians) * cos(abs(l1.lon - l2.lon).toRadians))
+
   private object PlainInterpolation extends Interpolation {
 
-    val R = 6372.8
     val P = 2
-
-    def distance(loc1: Location, loc2: Location): Double =
-      R * acos(sin(loc1.lat) * sin(loc2.lat) + cos(loc1.lat) * cos(loc2.lat) * cos(abs(loc1.lon - loc2.lon)))
 
     def interpolate(temperatures: Iterable[(Location, Double)], location: Location): Double =
       temperatures.foldLeft((0.0, 0.0))((acc, loc) => {
