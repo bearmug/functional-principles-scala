@@ -44,17 +44,20 @@ object ServiceLocator {
         case _ => None
       }.toMap
 
+    val NullLocation = new Location(-200, -200)
+
     override def itr(
                       year: Int,
                       stnKey: String,
                       stnSrc: BufferedSource,
                       tmpSrc: BufferedSource): Itr = {
 
-      val stationsMap = stationsData(stnSrc)
+      val stationsMap = stationsData(stnSrc).withDefaultValue(NullLocation)
 
       tmpSrc
         .getLines()
         .flatMap {
+          case tempPattern(stn, wban, month, day, tempF) if stationsMap(s"$stn:$wban") == NullLocation => None
           case tempPattern(stn, wban, month, day, tempF) => Some((
             LocalDate.of(year, month.toInt, day.toInt),
             stationsMap(s"$stn:$wban"),
